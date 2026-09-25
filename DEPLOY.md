@@ -1,4 +1,7 @@
-# 처음 한 번: GitHub Pages로 공개하기 (약 20분)
+# 처음 한 번: GitHub Pages로 공개하기 — 2026-09-25 완료
+
+현재 상태: https://lmho0314.github.io · 저장소 lmho0314/lmho0314.github.io · GitHub Desktop에 DART/site로 연결됨
+
 
 이 `site` 폴더만 공개 저장소가 된다. DART 폴더의 나머지(.env, 토큰, data/, scripts/)는 올라가지 않는다.
 
