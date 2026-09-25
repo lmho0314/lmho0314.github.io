@@ -7,7 +7,7 @@ sync_site.py — DART 폴더의 노트·결정 기록·산출물을 사이트(si
 하는 일
   notes/0N_*.md          → site/src/posts/sessions/*.md   (제목·날짜·대상을 frontmatter로)
   log/YYYY-MM-DD_*.md    → site/src/posts/logs/*.md
-  output/*.csv           → site/public/files/data/*.csv  + site/src/data/datasets.json
+  output/*.csv           → site/public/files/data/*.csv  + site/src/data/datasets.json  ('한투' 열은 빼고)
   output/학습노트_Vol1_리디자인/학습노트_Vol1_01-05회차_리서치판.pdf·html → site/public/files/vol1/
 
 원본은 건드리지 않는다. 비공개 파일(.env, .kis_token.json, data/, scripts/)은 복사하지 않는다.
@@ -34,8 +34,12 @@ DESC = {  # 산출물 설명 (파일명 → 한 줄)
     "02_계정대조표_2026반기.csv": "KB금융·삼성전자 2026 반기 연결 계정 대조표",
     "04_KB금융_부문별세전이익.csv": "KB금융 2026 상반기 부문별 세전이익과 비중",
     "04_국민은행_NIM.csv": "KB국민은행 대출·예금 평균이자율, 예대금리차, NIM 추이",
-    "05_금융지주_피어스냅샷.csv": "금융지주 7개사 현재가·시총·PBR·ROE·PER (2026.09.15)",
+    "05_금융지주_피어스냅샷.csv": "금융지주 7개사 현재가·시가총액·지배주주자본·반기순이익·ROE·PBR (2026.09.15)",
 }
+
+# 공개본에서 빼는 열: 한국투자증권 Open API가 제공한 원자료(약관 제5조③ — 시세정보 제3자 제공 금지)
+# 원본 output/*.csv 는 그대로 두고, 사이트에 올리는 사본에서만 뺀다.
+PRIVATE_COL = re.compile(r"한투|KIS", re.I)
 
 
 def q(s):
@@ -80,7 +84,7 @@ def sync_sessions():
         if num == 0:
             slug, kind, session, page = "review-01-05", "review", 0, 1
         else:
-            slug, kind, session, page = f"session-{num:02d}", "session", num, num + 1
+            slug, kind, session, page = f"session-{num:02d}", "session", num, (num + 1 if num <= 5 else 0)
         outs = [o for o in outputs if num and o.startswith(f"{num:02d}_")]
         fm = ["---", f"title: {q(title)}", f"date: {q(date)}", f"target: {q(target)}", f"kind: {kind}",
               f"session: {session}", f"vol1Page: {page}", f"outputs: {q(outs)}", f"source: {q('notes/' + p.name)}", "---", ""]
@@ -112,16 +116,20 @@ def sync_data():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     items = []
     for p in sorted((ROOT / "output").glob("*.csv")):
-        shutil.copy2(p, DATA_DIR / p.name)
         with p.open(encoding="utf-8-sig", newline="") as f:
             rows = list(csv.reader(f))
+        keep = [i for i, c in enumerate(rows[0]) if not PRIVATE_COL.search(c)] if rows else []
+        rows = [[r[i] for i in keep if i < len(r)] for r in rows]
+        dst = DATA_DIR / p.name
+        with dst.open("w", encoding="utf-8-sig", newline="") as f:
+            csv.writer(f, lineterminator="\n").writerows(rows)
         items.append({
             "file": p.name,
             "session": int(p.name[:2]) if p.name[:2].isdigit() else None,
             "desc": DESC.get(p.name, ""),
             "columns": rows[0] if rows else [],
             "rows": max(len(rows) - 1, 0),
-            "bytes": p.stat().st_size,
+            "bytes": dst.stat().st_size,
         })
     out = SITE / "src/data/datasets.json"
     out.parent.mkdir(parents=True, exist_ok=True)
