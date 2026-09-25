@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import Archive from '../../components/Archive.astro';
+import { allItems } from '../../lib/site';
+---
+<Base title="Research">
+  <div class="wrap">
+    <section class="phead">
+      <div class="eyebrow">Research</div>
+      <h1>리서치 아카이브</h1>
+      <p class="lead">업종 리포트, 회차 노트, 산출 데이터, 결정 기록. 모든 숫자는 출처와 기준일을 함께 남긴다.</p>
+    </section>
+    <Archive items={allItems()} />
+  </div>
+</Base>

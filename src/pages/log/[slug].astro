@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import { LOGS, u } from '../../lib/site';
+export function getStaticPaths() {
+  return LOGS.map((l: any) => ({ params: { slug: l.slug }, props: { l } }));
+}
+const { l } = Astro.props as any;
+const { Content } = l;
+---
+<Base title={l.title}>
+  <div class="wrap">
+    <nav class="small muted" aria-label="경로" style="padding-top:16px"><a href={u('/log')}>Log</a> / {l.date}</nav>
+    <section class="phead" style="padding-top:28px">
+      <div class="eyebrow">Log · {l.series}</div>
+      <h1>{l.title}</h1>
+    </section>
+    <div class="grid12 block" style="padding-top:28px">
+      <article class="span8 prose"><Content /></article>
+      <aside class="span4">
+        <dl class="meta">
+          <dt>날짜</dt><dd>{l.date}</dd>
+          <dt>상태</dt><dd>{l.status}</dd>
+          <dt>태그</dt><dd>{(l.tags || []).join(', ')}</dd>
+          <dt>시리즈</dt><dd>{l.series}</dd>
+        </dl>
+        <p style="margin-top:18px"><a class="btn" href={u('/research/vol1')}>관련 리포트 <span aria-hidden="true">→</span></a></p>
+      </aside>
+    </div>
+  </div>
+</Base>

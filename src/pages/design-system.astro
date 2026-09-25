@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import { u } from '../lib/site';
+const types = [
+  ['D 표지', '제목 → 부제 → Summary 3문단 → 한 장 지도 | Contents → 주요 지표 표', 'p.1'],
+  ['A 오프너', '넓은 상단 여백 → 라벨·헤드라인·리드 → 산문 → 하단 2단 그림·표', 'p.2'],
+  ["A' 분석 그림형", '산문 → 전폭 분석 그림 → 산문 → 2단', 'p.4'],
+  ['B 본문+그림', '산문 → 전폭 그림 → 전폭 표', 'p.3, p.5'],
+  ['C 데이터', '짧은 산문 → 가장 큰 차트 → 전폭 표', 'p.6'],
+  ['부록', '산문 → 전폭 표 → 2단 → 3단 정보 블록', 'p.7'],
+];
+---
+<Base title="Design System">
+  <div class="wrap">
+    <section class="phead">
+      <div class="eyebrow">Design System</div>
+      <h1>리포트 편집 시스템</h1>
+      <p class="lead">셀사이드 리서치 리포트의 편집 관례(산문 중심, 절제된 색, 그림·표·출처 규칙)를 학습 리포트에 적용한 조판 규칙. 인쇄판 A4 기준이며 이 사이트는 그 웹 환산이다.</p>
+    </section>
+    <section class="block grid12">
+      <div class="span8">
+        <h2 class="sec">핵심 규칙</h2>
+        <table class="t">
+          <tbody>
+            <tr><td style="width:140px">그리드</td><td>A4, 사용 폭 170mm, 본문 단 134mm(79%) 1단. 그림·표는 전폭·2단·3단</td></tr>
+            <tr><td>서체</td><td>헤드라인 15.5pt · 리드 8.5pt · 본문 7.9pt/행간 1.52 · 출처 5.9pt (Noto Sans CJK KR)</td></tr>
+            <tr><td>색</td><td>액센트 #168FA8 한 가지. 그림마다 강조 계열 하나만, 나머지는 회색</td></tr>
+            <tr><td>요소</td><td>용어는 본문에서 정의, 주의는 한 줄, 산출물은 작은 회색 글씨, KPI 카드·박스 없음</td></tr>
+            <tr><td>검증</td><td>넘침 점검 · 원본 숫자 토큰 대조 · 고유 문자열 확인 · 전체 쪽 모아보기 · 계산 검산</td></tr>
+          </tbody>
+        </table>
+        <h2 class="sec" style="margin-top:36px">쪽 유형</h2>
+        <table class="t">
+          <thead><tr><th>유형</th><th>구성</th><th>Vol.1</th></tr></thead>
+          <tbody>{types.map(([a, b, c]) => <tr><td><b>{a}</b></td><td>{b}</td><td class="small">{c}</td></tr>)}</tbody>
+        </table>
+      </div>
+      <aside class="span4">
+        <img src={u('/img/vol1/vol1_p4.jpg')} alt="적용 예: Vol.1 4쪽" style="width:100%;border:1px solid var(--hair)" />
+        <p class="small muted">적용 예 — Vol.1 4쪽 (A' 분석 그림형)</p>
+        <p><a class="btn" href={u('/files/design-system/report.css')}>report.css <span aria-hidden="true">↓</span></a></p>
+      </aside>
+    </section>
+  </div>
+</Base>

@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import { DATASETS, SESSIONS, u } from '../lib/site';
+const kb = (b: number) => (b / 1024).toFixed(1) + ' KB';
+const sess = (n: number | null) => SESSIONS.find((s: any) => s.session === n);
+---
+<Base title="Data">
+  <div class="wrap">
+    <section class="phead">
+      <div class="eyebrow">Data</div>
+      <h1>산출 데이터</h1>
+      <p class="lead">회차마다 스크립트로 만든 CSV를 그대로 공개한다. 리포트의 숫자는 모두 이 파일에서 나온다.</p>
+    </section>
+    <section class="block">
+      <table class="t">
+        <thead><tr><th>파일</th><th>회차</th><th>칼럼</th><th class="num">행</th><th class="num">크기</th></tr></thead>
+        <tbody>
+          {DATASETS.map((d) => {
+            const s: any = sess(d.session);
+            return (
+              <tr id={d.file}>
+                <td><a href={u(`/files/data/${d.file}`)} download><b>{d.file}</b></a><br /><span class="small muted">{d.desc}</span></td>
+                <td class="small">{s ? <a href={u(`/research/${s.slug}`)}>Session {String(d.session).padStart(2, '0')}</a> : '—'}</td>
+                <td class="small muted" style="max-width:360px">{d.columns.filter(Boolean).join(' · ')}</td>
+                <td class="num">{d.rows}</td>
+                <td class="num small">{kb(d.bytes)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <p class="src">자료: DART Open API, 한국투자증권 Open API. 인코딩 UTF-8 (BOM). 시세 데이터의 재배포 범위는 한국투자증권 Open API 약관을 따른다.</p>
+    </section>
+  </div>
+</Base>

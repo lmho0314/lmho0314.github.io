@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>공시에서 PBR까지 · 금융지주 학습노트 Vol.1</title>
+<style>
+/* =========================================================
+   EDITORIAL SYSTEM v2 — DART Study Research
+   A4 210×297 · usable 170mm · text column 134mm (79%)
+   v2: denser type, quieter metadata, teal accent, one blue subhead per page
+   ========================================================= */
+:root{
+  --ink:#141414;        /* headline, titles */
+  --body:#333;          /* body text */
+  --muted:#7a7f86;      /* labels, header meta */
+  --faint:#979ca2;      /* source, footnote */
+  --rule:#a3a8ae;       /* header/footer rules */
+  --hair:#dfe2e5;       /* table rules */
+  --grid:#eef0f2;       /* chart gridlines */
+  --accent:#168fa8;     /* single accent — restrained blue-cyan */
+  --accent-2:#9fd0db;   /* tint of accent */
+  --gray-series:#b9bec4;
+  --shade:#eef5f7;      /* pale highlight row */
+  --thead:#f4f5f6;
+}
+@page{ size:A4; margin:0 }
+*{ box-sizing:border-box; margin:0; padding:0 }
+html,body{ background:#fff }
+body{
+  font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  color:var(--body);
+  font-feature-settings:"tnum" 1;
+  -webkit-font-smoothing:antialiased;
+}
+.page{
+  width:210mm; height:297mm; position:relative; overflow:hidden;
+  padding:11mm 20mm 0 20mm;
+  page-break-after:always; break-after:page;
+}
+.page:last-child{ page-break-after:auto; break-after:auto }
+/* series identity: thin single-colour edge rule */
+.page::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:1.6mm; background:var(--accent) }
+
+/* ---------- running header (metadata, not navigation) ---------- */
+.rh{ display:flex; justify-content:space-between; align-items:flex-end;
+     padding-bottom:1.8mm; border-bottom:.4pt solid var(--rule) }
+.rh .l{ font-size:6.2pt; letter-spacing:.1em; color:var(--muted); font-weight:500 }
+.rh .r{ text-align:right; line-height:1.4 }
+.rh .r .d{ font-size:5.8pt; color:var(--faint) }
+.rh .r .s{ font-size:6.8pt; color:#5f646a; font-weight:400 }
+
+/* ---------- running footer ---------- */
+.rf{ position:absolute; left:20mm; right:20mm; bottom:10mm;
+     border-top:.4pt solid var(--rule); padding-top:1.6mm;
+     display:flex; justify-content:space-between; align-items:flex-start }
+.rf .l{ font-size:6pt; color:var(--muted); line-height:1.5 }
+.rf .l span{ display:block; color:var(--faint); font-size:5.6pt }
+.rf .n{ font-size:7.2pt; color:var(--ink) }
+
+/* ---------- text column ---------- */
+.col{ margin:0 18mm }
+.part{ font-size:9pt; font-weight:400; color:var(--muted); letter-spacing:-.005em }
+.part b{ font-weight:400; margin:0 .45em }
+h1{ font-size:15.5pt; word-break:keep-all; font-weight:700; color:var(--ink);
+    letter-spacing:-.035em; line-height:1.3; margin-top:.8mm }
+.lead{ font-size:8.5pt; font-weight:400; color:#161616; line-height:1.6;
+       margin-top:3mm; text-align:justify; letter-spacing:-.015em }
+.lead b{ font-weight:700; color:var(--ink) }
+h2{ font-size:8.4pt; font-weight:500; color:var(--accent); letter-spacing:-.01em;
+    margin-top:4.6mm; margin-bottom:1.3mm }
+h3{ font-size:8pt; font-weight:700; color:var(--ink); letter-spacing:-.015em;
+    margin-top:3.4mm; margin-bottom:1mm }
+p{ font-size:7.9pt; font-weight:350; line-height:1.52; text-align:justify;
+   letter-spacing:-.01em; color:var(--body) }
+p + p{ margin-top:1.7mm }
+p strong{ font-weight:600; color:#1c1c1c }
+p .run{ font-weight:700; color:var(--ink) }   /* inline opening phrase */
+.note{ font-size:7.5pt; line-height:1.55; color:var(--body); margin-top:1.8mm }
+.note em{ font-style:normal; font-weight:700; color:var(--ink); margin-right:.45em }
+
+/* ---------- figures / tables ---------- */
+.figrow{ display:grid; gap:0 8mm; margin-top:6mm }
+.figrow.two{ grid-template-columns:1fr 1fr }
+.fig{ display:flex; flex-direction:column }
+.fig .t{ font-size:7.8pt; font-weight:700; color:var(--ink); letter-spacing:-.02em;
+         padding-bottom:1.3mm; border-bottom:.6pt solid #333 }
+.fig .body{ flex:1; padding-top:2mm }
+.fig .src{ border-top:.4pt solid var(--rule); padding-top:1.1mm; margin-top:1.8mm;
+           font-size:5.9pt; color:var(--faint); line-height:1.5 }
+svg{ display:block; width:100%; height:auto; overflow:visible }
+svg text{ font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif; fill:#5a5f65; font-size:8px }
+
+table.rt{ width:100%; border-collapse:collapse; font-size:7pt }
+table.rt th{ background:var(--thead); font-weight:500; color:#4a4f55; padding:1.3mm 1.5mm;
+             border-bottom:.4pt solid var(--hair); text-align:right; white-space:nowrap }
+table.rt td{ padding:1.3mm 1.5mm; border-bottom:.4pt solid var(--hair); text-align:right;
+             color:#333; font-weight:350; white-space:nowrap }
+table.rt th:first-child, table.rt td:first-child{ text-align:left }
+table.rt td.l, table.rt th.l{ text-align:left }
+table.rt tr.hl td{ background:var(--shade); font-weight:700; color:var(--ink) }
+.unit{ font-size:5.9pt; color:var(--faint); line-height:1.55 }
+
+/* small analytical equation (Fig. 4) */
+.eqn{ display:grid; grid-template-columns:auto 1fr; column-gap:1.4mm; row-gap:.3mm;
+      font-size:7.3pt; color:#333; line-height:1.5; margin-bottom:2.4mm }
+.eqn .k{ color:var(--ink); font-weight:500 }
+.eqn .r b{ font-weight:700; color:var(--ink) }
+
+.out{ font-size:6.2pt; color:var(--faint); margin-top:3.4mm }
+.out b{ font-weight:500; color:var(--muted); margin-right:.6em }
+
+/* ---------- v2 additions for full document ---------- */
+h1.cover{ font-size:24pt; letter-spacing:-.04em; margin-top:1.2mm }
+.sub{ font-size:9.4pt; color:#2a2a2a; font-weight:400; margin-top:2.2mm; letter-spacing:-.015em }
+.sub2{ font-size:6.9pt; color:var(--muted); margin-top:1.2mm }
+.figrow.three{ grid-template-columns:1fr 1fr 1fr }
+.figrow.w6040{ grid-template-columns:1.25fr 1fr }
+
+/* one-page map: number + thin rule + text */
+.map .r{ display:grid; grid-template-columns:7.5mm 1fr auto; align-items:baseline;
+         padding:1.35mm 0; border-bottom:.4pt solid var(--hair) }
+.map .n{ font-size:6.8pt; color:var(--muted); font-weight:500 }
+.map .n.next{ color:var(--accent) }
+.map .f{ font-size:7.5pt; color:var(--ink); font-weight:500; letter-spacing:-.01em }
+.map .d{ font-size:6.5pt; color:var(--faint) }
+
+/* quiz list */
+.qa .q{ display:grid; grid-template-columns:7mm 1fr; padding:1.35mm 0;
+        border-bottom:.4pt solid var(--hair); font-size:7.4pt; color:#333; line-height:1.45 }
+.qa .q b{ font-weight:700; color:var(--ink) }
+.ans{ font-size:6.8pt; color:#555; line-height:1.55; margin-top:1.8mm }
+.ans b{ color:var(--ink); font-weight:700; margin-right:.4em }
+
+/* small definition blocks (appendix / cover) */
+.mini h4{ font-size:7.6pt; font-weight:700; color:var(--ink); letter-spacing:-.02em;
+          padding-bottom:1.2mm; border-bottom:.6pt solid #333; margin-bottom:1.3mm }
+.mini .li{ font-size:7pt; line-height:1.5; color:#444; padding:.9mm 0; border-bottom:.4pt solid var(--hair) }
+.mini .li b{ font-weight:700; color:var(--ink); margin-right:.45em }
+.mini .li:last-child{ border-bottom:none }
+
+table.rt td.num, table.rt th.num{ text-align:right }
+table.rt td.c{ text-align:center }
+table.rt.wrap td{ white-space:normal }
+</style>
+</head>
+<body>
+
+<!-- =====================================================
+     PAGE 1 · COVER / SUMMARY   (Type D)
+     ===================================================== -->
+<section class="page">
+  <header class="rh">
+    <div class="l">DART STUDY RESEARCH</div>
+    <div class="r"><div class="d">2026. 9. 24</div><div class="s">금융지주 학습노트 Vol.1</div></div>
+  </header>
+
+  <div class="col" style="margin-top:28mm">
+    <div class="part">Industry Study<b>–</b>금융지주</div>
+    <h1 class="cover">공시에서 PBR까지</h1>
+    <div class="sub">DART 공시와 한국투자증권 Open API로 따라간 1~5회차 복습 리포트</div>
+    <div class="sub2">KB금융(105560) 중심 · 금융지주 7개사 비교 · 기준 보고서 KB금융 2026 반기보고서</div>
+
+    <h2 style="margin-top:9mm">Summary</h2>
+    <p><span class="run">은행은 남의 돈으로 장사하는 회사다.</span> KB금융은 자기자본 1원으로 자산 13.8원을 굴린다. 자산의 대부분은 대출(505조), 부채의 대부분은 예금(486조)이다.</p>
+    <p><span class="run">얇은 마진 × 높은 레버리지 = 두 자릿수 ROE.</span> 자산 대비 수익(ROA)은 0.95%에 불과하지만, 레버리지 13.8배를 곱해 주주 기준 ROE <strong>13.0%</strong>(2026 상반기 연환산, 공시 13.11%)를 만든다.</p>
+    <p><span class="run">시장은 ROE가 높은 금융지주에 더 높은 PBR을 준다.</span> 7개사 중 ROE 13% 안팎의 KB·JB는 PBR 1배 수준, ROE 7~9%대 지방 지주는 0.45배 안팎이다. 예외인 iM금융을 6회차에서 검증한다.</p>
+  </div>
+
+  <div class="figrow two" style="margin-top:8mm">
+    <!-- 한 장 지도 -->
+    <div class="fig">
+      <div class="t">한 장 지도 <span style="font-weight:400;color:var(--muted);margin-left:.5em">아래에서 위로 읽기</span></div>
+      <div class="body map" style="padding-top:.4mm">
+        <div class="r"><span class="n">05</span><span class="f">주가 = PBR × BPS</span><span class="d">장부 몇 배에 거래되나</span></div>
+        <div class="r"><span class="n next">06</span><span class="f">PBR ← ROE</span><span class="d" style="color:var(--accent)">다음 회차: 회귀로 확인</span></div>
+        <div class="r"><span class="n">03</span><span class="f">ROE = ROA × 레버리지</span><span class="d">주주 돈의 수익률</span></div>
+        <div class="r"><span class="n">02</span><span class="f">ROA = (이자 + 수수료 − 충당금) ÷ 자산</span><span class="d">손익 3층 구조</span></div>
+        <div class="r"><span class="n">04</span><span class="f">순이자이익 = 운용자산 × NIM</span><span class="d">본업 마진</span></div>
+        <div class="r" style="border-bottom:none"><span class="n">01</span><span class="f">모든 숫자의 출처 = 공시</span><span class="d">DART</span></div>
+      </div>
+    </div>
+
+    <!-- Contents -->
+    <div class="fig">
+      <div class="t">Contents</div>
+      <div class="body" style="padding-top:.4mm">
+        <table class="rt">
+          <thead><tr><th>회차</th><th class="l">주제</th><th class="l">핵심 산출물</th><th>쪽</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td class="l">공시와 DART</td><td class="l">KB금융 공시 달력 147건</td><td>2</td></tr>
+            <tr><td>02</td><td class="l">은행 재무제표 구조</td><td class="l">은행·제조업 계정 대조표</td><td>3</td></tr>
+            <tr><td>03</td><td class="l">ROE</td><td class="l">ROE 조정 3단계</td><td>4</td></tr>
+            <tr><td>04</td><td class="l">NIM과 지주 구조</td><td class="l">부문별 세전이익</td><td>5</td></tr>
+            <tr><td>05</td><td class="l">PER·PBR</td><td class="l">산출물 ① 피어 스냅샷</td><td>6</td></tr>
+            <tr><td>부록</td><td class="l">함정·자가점검·정정 기록</td><td class="l">—</td><td>7</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="figrow w6040" style="margin-top:8mm">
+    <!-- KB금융 주요 지표 -->
+    <div class="fig">
+      <div class="t">KB금융 주요 지표</div>
+      <div class="body" style="padding-top:.4mm">
+        <table class="rt">
+          <tbody>
+            <tr><td>현재가 (09.23)</td><td>174,100원</td><td style="padding-left:5mm">ROE (연환산)</td><td>13.0%</td></tr>
+            <tr><td>시가총액</td><td>61.8조</td><td style="padding-left:5mm">ROA</td><td>0.95%</td></tr>
+            <tr><td>BPS (직전 결산)</td><td>164,669원</td><td style="padding-left:5mm">레버리지</td><td>13.8배</td></tr>
+            <tr><td>PBR (반기말 자본)</td><td>1.03배</td><td style="padding-left:5mm">NIM (국민은행)</td><td>1.76%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="src">자료: DART 2026 반기보고서, 한국투자증권 Open API</div>
+    </div>
+
+    <!-- 증권사 목표주가 -->
+    <div class="fig">
+      <div class="t">증권사 목표주가</div>
+      <div class="body" style="padding-top:.4mm">
+        <table class="rt">
+          <tbody>
+            <tr><td>평균 (16건)</td><td>223,188원</td></tr>
+            <tr><td>최고 · 최저</td><td>240,000 · 200,000</td></tr>
+            <tr><td>투자의견</td><td>전원 매수</td></tr>
+          </tbody>
+        </table>
+        <div class="unit" style="margin-top:1.6mm">8회차 자체 목표주가와 비교 예정</div>
+      </div>
+      <div class="src">자료: 한국투자증권 Open API, 2026.06.01~09.23</div>
+    </div>
+  </div>
+
+  <div class="figrow two" style="margin-top:6mm">
+    <div class="mini">
+      <h4>분석 대상 7개사</h4>
+      <div class="li">KB금융 · 신한지주 · 하나금융지주 · 우리금융지주<br>JB금융지주 · BNK금융지주 · iM금융지주</div>
+    </div>
+    <div class="mini">
+      <h4>데이터</h4>
+      <div class="li"><b>DART</b>재무제표·공시 원문 (2026 반기보고서)</div>
+      <div class="li"><b>한국투자증권 Open API</b>시세·목표주가</div>
+    </div>
+  </div>
+
+  <footer class="rf">
+    <div class="l">DART Study Research · 금융지주 학습노트 Vol.1<span>본 자료는 개인 학습 목적으로 작성되었으며 투자 권유가 아닙니다. 수치 기준일은 각 표에 표기했습니다.</span></div>
+    <div class="n">1</div>
+  </footer>
+</section>
+
+
+<!-- =====================================================
+     PAGE 2 · SESSION 01 · 공시와 DART   (Type A · opener)
+     ===================================================== -->
+<section class="page">
+  <header class="rh">
+    <div class="l">DART STUDY RESEARCH</div>
+    <div class="r"><div class="d">2026. 9. 24</div><div class="s">금융지주 · Session 01</div></div>
+  </header>
+
+  <div class="col" style="margin-top:47mm">
+    <div class="part">Session 01<b>–</b>공시와 DART</div>
+    <h1>회사의 올해 관심사는 공시 목록에 그대로 드러난다</h1>
+    <div class="lead">KB금융(105560)이 2026년 1월 1일부터 9월 12일까지 제출한 공시를 전수 분석했다. 8.5개월 동안 <b>147건</b>, 월평균 약 17건이다. 건수로는 거래소공시(66건, 45%)와 발행공시(38건)가 대부분이지만, 올해의 기조는 9건에 불과한 <b>주요사항보고</b>에서 가장 선명하게 읽힌다.</div>
+
+    <p style="margin-top:3.6mm"><span class="run">공시는 법이 정한 공개 의무다.</span> 상장사는 중요한 사실을 투자자에게 알려야 하고, 그 서류를 모아두는 금융감독원의 창구가 DART(금융감독원 전자공시시스템)다. 애널리스트가 가장 먼저 여는 화면이다. 공시 가운데 날짜가 법으로 정해진 실적 보고서를 <strong>정기공시</strong>, 증자·자사주·합병 등 중대한 결정을 알리는 서류를 <strong>주요사항보고</strong>라 한다.</p>
+
+    <h2>주요사항보고 9건이 말해주는 올해의 기조</h2>
+    <p>올해 KB금융의 주요사항보고 9건은 자기주식 취득 관련 4건과 조건부자본증권(코코본드) 발행 관련 5건으로 나뉜다. 한 문장으로 줄이면 “주주에게 돌려주면서 자본은 쌓는다”이다.</p>
+    <p>채권 발행은 금융지주의 일상이다. 발행공시가 38건으로 두 번째로 많은데, 돈을 빌려와 빌려주는 사업이라 자금 조달 공시가 반복되기 때문이다.</p>
+
+    <h3>정기공시 8건 중 실제 신규 제출은 3건</h3>
+    <p>정기공시 8건 가운데 새로 제출된 보고서는 사업보고서·분기보고서·반기보고서 3건이고, 나머지 5건은 이미 낸 보고서를 고쳐 다시 제출한 <strong>[기재정정]</strong>이다. 이후 회차의 분석은 모두 8월 14일 제출된 반기보고서를 기준 자료로 삼는다(접수번호 20260814004200).</p>
+    <div class="note"><em>주의</em>[기재정정]이 붙은 보고서가 있으면 최신본을 쓴다. 실무에서 자주 사고 나는 지점이다.</div>
+  </div>
+
+  <div class="figrow two" style="margin-top:9mm">
+    <!-- 그림 1 -->
+    <div class="fig">
+      <div class="t">그림 1. KB금융 2026년 공시 유형별 건수</div>
+      <div class="body">
+        <svg viewBox="0 0 310 168" aria-label="공시 유형별 건수">
+          <text x="0" y="7" style="font-size:7.6px;fill:#979ca2">(건)</text>
+          <!-- grid: x0=78, scale 2.9px/건 -->
+          <g stroke="#eef0f2" stroke-width="0.7">
+            <line x1="136" y1="14" x2="136" y2="152"/>
+            <line x1="194" y1="14" x2="194" y2="152"/>
+            <line x1="252" y1="14" x2="252" y2="152"/>
+          </g>
+          <line x1="78" y1="14" x2="78" y2="152" stroke="#a3a8ae" stroke-width="0.7"/>
+          <g text-anchor="middle" style="font-size:7.6px;fill:#979ca2">
+            <text x="78" y="163">0</text><text x="136" y="163">20</text>
+            <text x="194" y="163">40</text><text x="252" y="163">60</text>
+          </g>
+          <!-- rows: y top = 20 + i*22 -->
+          <g text-anchor="end" style="font-size:8.3px">
+            <text x="71" y="28">거래소공시</text>
+            <text x="71" y="50">발행공시</text>
+            <text x="71" y="72">지분공시</text>
+            <text x="71" y="94" style="fill:#141414;font-weight:700">주요사항보고</text>
+            <text x="71" y="116">정기공시</text>
+            <text x="71" y="138">기타공시</text>
+          </g>
+          <g fill="#b9bec4">
+            <rect x="78" y="20" width="191.4" height="10.5"/>
+            <rect x="78" y="42" width="110.2" height="10.5"/>
+            <rect x="78" y="64" width="60.9"  height="10.5"/>
+            <rect x="78" y="108" width="23.2" height="10.5"/>
+            <rect x="78" y="130" width="14.5" height="10.5"/>
+          </g>
+          <!-- 주요사항보고 9 = 자사주 4 + 코코본드 5 -->
+          <rect x="78" y="86" width="11.6" height="10.5" fill="#168fa8"/>
+          <rect x="89.6" y="86" width="14.5" height="10.5" fill="#9fd0db"/>
+          <g style="font-size:8px">
+            <text x="273.5" y="28">66</text>
+            <text x="192.2" y="50">38</text>
+            <text x="142.9" y="72">21</text>
+            <text x="108" y="94" style="fill:#141414;font-weight:700">9</text>
+            <text x="119" y="94" style="fill:#6a7076;font-size:7.4px">(자사주 4 · 코코본드 5)</text>
+            <text x="105.2" y="116">8</text>
+            <text x="96.5" y="138">5</text>
+          </g>
+        </svg>
+      </div>
+      <div class="src">자료: DART 공시검색 API (list.json), 2026.09.12 조회</div>
+    </div>
+
+    <!-- 표 1 -->
+    <div class="fig">
+      <div class="t">표 1. 정기공시 8건 중 실제 신규 제출은 3건</div>
+      <div class="body">
+        <table class="rt">
+          <thead><tr><th>보고서</th><th>대상 기간</th><th>제출일</th><th>법정 시기</th></tr></thead>
+          <tbody>
+            <tr><td>사업보고서</td><td>2025.12</td><td>2026.03.13</td><td>결산 후 90일</td></tr>
+            <tr><td>분기보고서</td><td>2026.03</td><td>2026.05.15</td><td>분기 후 45일</td></tr>
+            <tr class="hl"><td>반기보고서</td><td>2026.06</td><td>2026.08.14</td><td>반기 후 45일</td></tr>
+            <tr><td>[기재정정] 5건</td><td>과거 보고서</td><td>03.24 · 06.19</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="unit" style="margin-top:1.8mm">주: 음영 행은 이후 회차 분석의 기준 자료 (접수번호 20260814004200)</div>
+      </div>
+      <div class="src">자료: DART</div>
+    </div>
+  </div>
+
+  <div class="out"><b>산출물</b>output/01_KB금융_공시달력_2026.csv</div>
+
+  <footer class="rf">
+    <div class="l">DART Study Research · 금융지주 학습노트 Vol.1<span>본 자료는 개인 학습 목적으로 작성되었으며 투자 권유가 아닙니다.</span></div>
+    <div class="n">2</div>
+  </footer>
+</section>
+
+<!-- =====================================================
+     PAGE 3 · SESSION 02 · 은행 재무제표   (Type B · text + figures)
+     ===================================================== -->
+<section class="page">
+  <header class="rh">
+    <div class="l">DART STUDY RESEARCH</div>
+    <div class="r"><div class="d">2026. 9. 24</div><div class="s">금융지주 · Session 02</div></div>
+  </header>
+
+  <div class="col" style="margin-top:24mm">
+    <div class="part">Session 02<b>–</b>은행 재무제표</div>
+    <h1>은행의 자산은 대출이고, 부채는 예금이다</h1>
+    <div class="lead">KB금융과 삼성전자의 2026 반기보고서 연결재무제표를 나란히 놓으면 두 회사가 정반대로 조달한다는 것이 보인다. KB금융은 자산 866.9조를 자본 62.7조로 떠받쳐 레버리지가 <b>13.8배</b>이고, 삼성전자는 1.31배다. 은행 분석이 제조업과 다른 도구를 쓰는 이유가 여기서 출발한다.</div>
+
+    <h2>빌려준 돈이 자산, 맡아둔 돈이 부채</h2>
+    <p>KB금융의 최대 자산은 대출채권 505.4조, 최대 부채는 고객이 맡긴 예금인 예수부채 486.3조다. 자산총계 866.9조 가운데 부채가 804.2조, 자본이 62.7조(비지배지분 1.81조 포함)다. 반면 삼성전자의 최대 자산은 공장·설비(유형자산 224.4조)다. 자산을 자본으로 나눈 값이 <strong>레버리지</strong>, 곧 자기 돈 1원으로 굴리는 자산이다.</p>
+    <p><span class="run">은행에 기업가치(EV)·DCF가 통하지 않는 이유.</span> 은행의 부채(예금)는 갚을 빚이 아니라 영업의 재료다. 부채를 빼고 주주 몫을 구하는 방식이 성립하지 않아, 처음부터 자본만 놓고 본다.</p>
+
+    <h3>은행 손익은 3층 구조, 매출액이 없다</h3>
+    <p>은행 손익은 이자 차익 → 수수료 → 떼일 돈 대비(충당금) 순서로 쌓인다. 제조업의 매출액·매출원가 자리에 이 셋이 있다. <strong>충당금</strong>은 못 받을 것 같은 대출을 미리 비용으로 털어둔 금액이다. KB금융의 2026 상반기 누적 순이자이익은 6.48조, 순수수료이익은 2.96조, 신용손실충당금은 −1.01조이고, 보험·관리비·세금 등을 반영한 반기순이익은 3.93조다(표 2).</p>
+    <div class="note"><em>주의</em>반기보고서 손익에는 숫자가 두 개다. thstrm_amount는 2분기 3개월치, thstrm_add_amount는 1~6월 누적이다. KB 순이익 2.01조 vs 3.93조.</div>
+  </div>
+
+  <!-- 그림 2 · full width -->
+  <div class="figrow" style="margin-top:6mm">
+    <div class="fig">
+      <div class="t">그림 2. 자산을 무엇으로 조달했나 — 부채와 자본의 비중</div>
+      <div class="body">
+        <svg viewBox="0 0 642 104" aria-label="부채와 자본의 비중">
+          <!-- legend -->
+          <rect x="80" y="2" width="8" height="8" fill="#b9bec4"/><text x="92" y="9.5" style="font-size:7.6px">부채</text>
+          <rect x="122" y="2" width="8" height="8" fill="#168fa8"/><text x="134" y="9.5" style="font-size:7.6px">자본</text>
+          <text x="642" y="9.5" text-anchor="end" style="font-size:7.6px;fill:#979ca2">레버리지 (자산 ÷ 자본)</text>
+          <!-- bar area x 80..540 (460) ; percent ticks -->
+          <g stroke="#eef0f2" stroke-width="0.7">
+            <line x1="195" y1="18" x2="195" y2="92"/><line x1="310" y1="18" x2="310" y2="92"/>
+            <line x1="425" y1="18" x2="425" y2="92"/><line x1="540" y1="18" x2="540" y2="92"/>
+          </g>
+          <line x1="80" y1="18" x2="80" y2="92" stroke="#a3a8ae" stroke-width="0.7"/>
+          <!-- KB금융 -->
+          <text x="72" y="33" text-anchor="end" style="font-size:8.3px;fill:#141414;font-weight:700">KB금융</text>
+          <rect x="80" y="23" width="426.9" height="14" fill="#b9bec4"/>
+          <rect x="506.9" y="23" width="33.1" height="14" fill="#168fa8"/>
+          <text x="80" y="48.5" style="font-size:7.4px">부채 804.2조 (92.8%)</text>
+          <text x="540" y="48.5" text-anchor="end" style="font-size:7.4px">자본 62.7조 (7.2%)</text>
+          <text x="642" y="34" text-anchor="end" style="font-size:9.4px;font-weight:700;fill:#141414">13.8배</text>
+          <!-- 삼성전자 -->
+          <text x="72" y="72" text-anchor="end" style="font-size:8.3px">삼성전자</text>
+          <rect x="80" y="62" width="109" height="14" fill="#b9bec4"/>
+          <rect x="189" y="62" width="351" height="14" fill="#168fa8"/>
+          <text x="80" y="87.5" style="font-size:7.4px">부채 180.2조 (23.7%)</text>
+          <text x="540" y="87.5" text-anchor="end" style="font-size:7.4px">자본 579.3조 (76.3%)</text>
+          <text x="642" y="73" text-anchor="end" style="font-size:9.4px;fill:#333">1.31배</text>
+          <g text-anchor="middle" style="font-size:7px;fill:#979ca2">
+            <text x="80" y="101">0%</text><text x="195" y="101">25%</text><text x="310" y="101">50%</text>
+            <text x="425" y="101">75%</text><text x="540" y="101">100%</text>
+          </g>
+        </svg>
+      </div>
+      <div class="src">자료: DART 단일회사 전체 재무제표 API, 2026 반기말 연결 기준</div>
+    </div>
+  </div>
+
+  <!-- 표 2 -->
+  <div class="figrow" style="margin-top:6mm">
+    <div class="fig">
+      <div class="t">표 2. KB금융 손익 3층 구조 (2026 상반기 누적)</div>
+      <div class="body">
+        <table class="rt">
+          <thead><tr><th style="width:9%">층</th><th class="l" style="width:26%">항목</th><th style="width:17%">금액 (조원)</th><th class="l" style="padding-left:6mm">뜻</th></tr></thead>
+          <tbody>
+            <tr><td>①</td><td class="l">순이자이익</td><td>6.48</td><td class="l" style="padding-left:6mm">받은 이자 − 준 이자</td></tr>
+            <tr><td>②</td><td class="l">순수수료이익</td><td>2.96</td><td class="l" style="padding-left:6mm">송금·카드·펀드 판매 등</td></tr>
+            <tr><td>③</td><td class="l">신용손실충당금</td><td>−1.01</td><td class="l" style="padding-left:6mm">떼일 돈 미리 비용 처리</td></tr>
+            <tr class="hl"><td></td><td class="l">반기순이익</td><td>3.93</td><td class="l" style="padding-left:6mm">보험·관리비·세금 등 반영 후</td></tr>
+          </tbody>
+        </table>
+        <div class="unit" style="margin-top:1.6mm">주: 영업이익 5.44조, 지배주주 순이익 3.88조</div>
+      </div>
+      <div class="src">자료: DART, thstrm_add_amount(당기 누적) 기준</div>
+    </div>
+  </div>
+
+  <div class="out"><b>산출물</b>output/02_계정대조표_2026반기.csv</div>
+
+  <footer class="rf">
+    <div class="l">DART Study Research · 금융지주 학습노트 Vol.1<span>본 자료는 개인 학습 목적으로 작성되었으며 투자 권유가 아닙니다.</span></div>
+    <div class="n">3</div>
+  </footer>
+</section>
+
+
+<!-- =====================================================
+     PAGE 4 · SESSION 03 · ROE   (Type A variant · full-width figure mid-page)
+     ===================================================== -->
+<section class="page">
+  <header class="rh">
+    <div class="l">DART STUDY RESEARCH</div>
+    <div class="r"><div class="d">2026. 9. 24</div><div class="s">금융지주 · Session 03</div></div>
+  </header>
+
+  <div class="col" style="margin-top:20mm">
+    <div class="part">Session 03<b>–</b>ROE</div>
+    <h1>ROA 0.95%를 레버리지로 불려 ROE 13%를 만든다</h1>
+    <div class="lead">KB금융의 2026 상반기 ROE를 공시 원자료로 직접 계산하면 연환산 <b>13.0%</b>로, 공시치 13.11%와 0.1%p 차이다. 자산 대비 수익(ROA)은 0.95%에 불과하지만 자기자본의 <b>13.8배</b>에 달하는 자산을 굴려, 주주 기준으로는 두 자릿수 수익률을 만든다.</div>
+
+    <h2>ROE = 주주 돈 100원으로 1년에 번 돈</h2>
+    <p>ROE는 분자와 분모의 성격이 다르다. 분자(순이익)는 1년 동안 쌓이는 기간 숫자이고, 분모(자기자본)는 한 시점의 잔액이다. 그래서 반기보고서 숫자를 그대로 나누지 않고 세 번 조정한다. 반기 이익에 2를 곱해 분자를 1년치로 늘리고(<strong>연환산</strong>), 주가와 무관한 남의 몫인 비지배지분을 분자·분모에서 뺀 뒤(<strong>지배주주 기준</strong>), 이익은 기간 내내 벌었으니 분모도 작년 말과 반기말의 평균을 쓴다(<strong>평균자본</strong>).</p>
+    <p>세 단계를 거치면 ROE는 12.5%에서 12.8%, 13.0%로 올라간다(그림 3). 공시치와 남는 0.1%p는 신종자본증권 처리 등 회사 산정 기준 차이로 추정한다.</p>
+  </div>
+
+  <!-- 그림 3 · full width -->
+  <div class="figrow" style="margin-top:6mm">
+    <div class="fig">
+      <div class="t">그림 3. ROE 조정 3단계</div>
+      <div class="body">
+        <svg viewBox="0 0 642 186" aria-label="ROE 조정 3단계">
+          <!-- plot area: x 118..626 ; y(v)=14+(13.3-v)*78 -->
+          <text x="0" y="8" style="font-size:7.6px;fill:#979ca2">(%, 연환산)</text>
+          <g stroke="#eef0f2" stroke-width="0.7">
+            <line x1="118" y1="14" x2="626" y2="14"/>
+            <line x1="118" y1="29.6" x2="626" y2="29.6"/>
+            <line x1="118" y1="45.2" x2="626" y2="45.2"/>
+            <line x1="118" y1="60.8" x2="626" y2="60.8"/>
+            <line x1="118" y1="76.4" x2="626" y2="76.4"/>
+          </g>
+          <line x1="118" y1="92" x2="626" y2="92" stroke="#a3a8ae" stroke-width="0.7"/>
+          <g text-anchor="end" style="font-size:7.6px;fill:#979ca2">
+            <text x="110" y="16.7">13.3</text><text x="110" y="32.3">13.1</text>
+            <text x="110" y="47.9">12.9</text><text x="110" y="63.5">12.7</text>
+            <text x="110" y="79.1">12.5</text><text x="110" y="94.7">12.3</text>
+          </g>
+          <!-- disclosed ROE 13.11 -->
+          <line x1="118" y1="28.8" x2="626" y2="28.8" stroke="#8a8f95" stroke-width="0.7" stroke-dasharray="2.5 2.2"/>
+          <text x="624" y="24.5" text-anchor="end" style="font-size:7.4px;fill:#7a7f86">공시 ROE 13.11%</text>
+          <polyline points="203,76.4 372,53 541,37.4" fill="none" stroke="#168fa8" stroke-width="1.2"/>
+          <circle cx="203" cy="76.4" r="3" fill="#fff" stroke="#168fa8" stroke-width="1.2"/>
+          <circle cx="372" cy="53" r="3" fill="#fff" stroke="#168fa8" stroke-width="1.2"/>
+          <circle cx="541" cy="37.4" r="3.4" fill="#168fa8"/>
+          <g text-anchor="middle" style="font-size:9px;font-weight:600;fill:#141414">
+            <text x="203" y="68.5">12.5%</text>
+            <text x="372" y="45">12.8%</text>
+            <text x="541" y="52.5">13.0%</text>
+          </g>
+          <!-- step labels -->
+          <g text-anchor="middle" style="font-size:8px;font-weight:500;fill:#2a2a2a">
+            <text x="203" y="105">① 단순 계산</text>
+            <text x="372" y="105">② 지배주주 기준</text>
+            <text x="541" y="105">③ 평균자본</text>
+          </g>
+          <g stroke="#e3e6e9" stroke-width="0.6">
+            <line x1="0" y1="111" x2="642" y2="111"/><line x1="0" y1="136" x2="642" y2="136"/>
+            <line x1="0" y1="161" x2="642" y2="161"/><line x1="0" y1="186" x2="642" y2="186"/>
+          </g>
+          <g style="font-size:7.8px;fill:#3a3f45;font-weight:500">
+            <text x="0" y="122">분자</text><text x="0" y="131.5" style="font-weight:400;fill:#979ca2;font-size:6.9px">순이익 × 2 (조원)</text>
+            <text x="0" y="147">분모</text><text x="0" y="156.5" style="font-weight:400;fill:#979ca2;font-size:6.9px">자본 (조원)</text>
+            <text x="0" y="172">조정</text><text x="0" y="181.5" style="font-weight:400;fill:#979ca2;font-size:6.9px">이 단계에서 바꾼 것</text>
+          </g>
+          <g text-anchor="middle">
+            <g style="font-size:8.4px;fill:#1c1c1c">
+              <text x="203" y="122">3.93 × 2</text><text x="372" y="122">3.88 × 2</text><text x="541" y="122">3.88 × 2</text>
+              <text x="203" y="147">÷ 62.70</text><text x="372" y="147">÷ 60.89</text><text x="541" y="147">÷ 59.97</text>
+            </g>
+            <g style="font-size:7.8px;fill:#3a3f45">
+              <text x="203" y="172">반기 이익 연환산</text><text x="372" y="172">비지배지분 제외</text><text x="541" y="172">기초·기말 평균자본</text>
+            </g>
+            <g style="font-size:6.9px;fill:#979ca2">
+              <text x="203" y="131.5">반기순이익(누적)</text>
+              <text x="372" y="131.5">지배주주 순이익</text>
+              <text x="541" y="131.5">지배주주 순이익</text>
+              <text x="203" y="156.5">자본총계</text>
+              <text x="372" y="156.5">지배주주지분 (반기말)</text>
+              <text x="541" y="156.5">(작년 말 59.05 + 반기말 60.89) ÷ 2</text>
+              <text x="203" y="181.5">분자를 1년치로</text>
+              <text x="372" y="181.5">분자·분모 모두, 주가와 무관한 몫</text>
+              <text x="541" y="181.5">이익은 기간 내내 벌었으므로</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="src">자료: DART, KB금융 2026 반기보고서 연결. 공시 ROE 13.11%와의 차이는 신종자본증권 처리 등 회사 산정 기준 차이로 추정</div>
+    </div>
+  </div>
+
+  <div class="col">
+    <h3 style="margin-top:5mm">같은 ROE라도 출처가 다르면 위험이 다르다</h3>
+    <p>ROE는 ROA와 레버리지의 곱으로 분해된다(그림 4). 은행은 자산 대비 1%도 못 번다. 그러나 남의 돈을 13.8배 끌어다 굴려서 주주 기준으로는 13%를 만든다. 삼성전자는 레버리지가 1.31배라 <strong>ROA 자체가 높아야</strong> ROE가 나온다. 사업 구조가 정반대다. 그래서 ROE를 볼 때는 ROA가 좋아서인지 레버리지가 커서인지를 구분해야 하고, 후자라면 위험도 함께 커진 것이다.</p>
+    <p>실무 관점에서 계산 자체는 기본기다. 업무는 “왜 13%인가”를 분해하고 “내년엔 몇 %인가”를 추정하는 일이다.</p>
+  </div>
+
+  <div class="figrow two" style="margin-top:6mm">
+    <!-- 그림 4 -->
+    <div class="fig">
+      <div class="t">그림 4. ROE 분해</div>
+      <div class="body">
+        <div class="eqn">
+          <span class="k">ROE</span><span class="r">= ROA × 레버리지</span>
+          <span></span><span class="r">= 0.95% × 13.8배</span>
+          <span></span><span class="r">≈ <b>13.1%</b></span>
+        </div>
+        <svg viewBox="0 0 310 78" aria-label="레버리지 비교">
+          <text x="0" y="7" style="font-size:7.6px;fill:#979ca2">(배, 자산 ÷ 자본)</text>
+          <!-- x0=64, 15.2px per 1x; gridlines 0/5/10/15 -->
+          <g stroke="#eef0f2" stroke-width="0.7">
+            <line x1="140" y1="14" x2="140" y2="62"/>
+            <line x1="216" y1="14" x2="216" y2="62"/>
+            <line x1="292" y1="14" x2="292" y2="62"/>
+          </g>
+          <line x1="64" y1="14" x2="64" y2="62" stroke="#a3a8ae" stroke-width="0.7"/>
+          <text x="58" y="30" text-anchor="end" style="font-size:8.3px;fill:#141414;font-weight:700">KB금융</text>
+          <rect x="64" y="20" width="209.8" height="13" fill="#168fa8"/>
+          <text x="277.5" y="30" style="font-size:8.3px;fill:#141414;font-weight:600">13.8</text>
+          <text x="58" y="53" text-anchor="end" style="font-size:8.3px">삼성전자</text>
+          <rect x="64" y="43" width="19.9" height="13" fill="#b9bec4"/>
+          <text x="87.5" y="53" style="font-size:8.3px">1.31</text>
+          <g text-anchor="middle" style="font-size:7.6px;fill:#979ca2">
+            <text x="64" y="73">0</text><text x="140" y="73">5</text>
+            <text x="216" y="73">10</text><text x="292" y="73">15</text>
+          </g>
+        </svg>
+      </div>
+      <div class="src">자료: DART 2026 반기보고서 연결 (레버리지: 2회차 계정대조표)</div>
+    </div>
+
+    <!-- 표 3 -->
+    <div class="fig">
+      <div class="t">표 3. 같은 보고서, 두 개의 ROE</div>
+      <div class="body">
+        <table class="rt">
+          <thead><tr><th>실체</th><th>ROE</th><th>ROA</th><th class="l">비고</th></tr></thead>
+          <tbody>
+            <tr class="hl"><td>KB금융지주 (연결)</td><td>13.11%</td><td>0.95%</td><td class="l">상장 회사 = 우리가 사는 주식</td></tr>
+            <tr><td>KB국민은행 (자회사)</td><td>9.27%</td><td>0.61%</td><td class="l">은행 단독</td></tr>
+          </tbody>
+        </table>
+        <div class="note" style="margin-top:2.2mm;font-size:7.2pt"><em>주의</em>지주와 은행의 숫자를 섞지 않는다. 같은 보고서에 13.11%와 9.27%가 함께 있다.</div>
+      </div>
+      <div class="src">자료: KB금융 2026 반기보고서 「II-5. 재무건전성 등 기타 참고사항」, 연환산</div>
+    </div>
+  </div>
+
+  <footer class="rf">
+    <div class="l">DART Study Research · 금융지주 학습노트 Vol.1<span>본 자료는 개인 학습 목적으로 작성되었으며 투자 권유가 아닙니다.</span></div>
+    <div class="n">4</div>
+  </footer>
+</section>
+
+<!-- =====================================================
+     PAGE 5 · SESSION 04 · NIM과 지주 구조   (Type B)
+     ===================================================== -->
+<section class="page">
+  <header class="rh">
+    <div class="l">DART STUDY RESEARCH</div>
+    <div class="r"><div class="d">2026. 9. 24</div><div class="s">금융지주 · Session 04</div></div>
+  </header>
+
+  <div class="col" style="margin-top:24mm">
+    <div class="part">Session 04<b>–</b>NIM과 지주 구조</div>
+    <h1>금리는 내렸지만 마진은 지켰다</h1>
+    <div class="lead">2026 상반기 KB국민은행의 순이자마진(NIM)은 <b>1.76%</b>로 전년 동기 1.74%보다 높다. 대출금리가 0.29%p 내리는 동안 예금금리도 0.28%p 내려 마진을 지켰고, 대출 규모까지 늘어 순이자이익은 <b>+6.2%</b> 증가했다. 이 은행 부문이 KB금융 세전이익의 52%를 차지한다.</div>
+
+    <h2>NIM = 은행 본업의 마진율</h2>
+    <p>NIM은 순이자이익을 이자를 낳는 자산으로 나눈 값이다. 수익률 낮은 국채·예치금까지 분모에 들어가기 때문에 예대금리차(2.00%p)보다 낮게 나온다. 2026 상반기 국민은행의 이자수익은 10.97조, 이자비용은 5.31조로 순이자이익은 5.66조다.</p>
+    <p><span class="run">대출금리 −0.29%p, 예금금리 −0.28%p.</span> 받는 이자가 줄어든 만큼 주는 이자도 줄였다(표 4). 순이자이익은 운용자산과 NIM의 곱이므로 성장 경로는 볼륨 또는 마진 둘뿐이다. 국민은행은 총여신이 416.4조에서 428.9조로 늘면서 순이자이익이 5.33조에서 5.66조로 6.2% 증가했다.</p>
+
+    <h3>NIM은 지주 이익의 절반을 설명한다</h3>
+    <p>KB금융 세전이익의 52%가 은행 부문이다. 나머지는 증권·보험·카드가 각자의 지표로 움직인다(그림 5). 그래서 지주 이익은 부문별로 따로 추정해 더한다(<strong>부분의 합</strong>). 은행은 NIM × 대출성장률, 증권은 거래대금·수수료, 보험은 보험수익 − 보험비용이 핵심 변수다.</p>
+    <div class="note"><em>주의</em>NIM은 은행 기준으로만 공시된다. “지주 NIM”은 없다. 지주 비교 시 각주로 명시한다.</div>
+  </div>
+
+  <div class="figrow" style="margin-top:7mm">
+    <!-- 표 4 -->
+    <div class="fig">
+      <div class="t">표 4. KB국민은행 수익성 지표 추이</div>
+      <div class="body">
+        <table class="rt">
+          <thead><tr><th style="width:32%">(%)</th><th style="width:17%">2024</th><th style="width:17%">2025</th><th style="width:17%">2025 상반기</th><th style="width:17%">2026 상반기</th></tr></thead>
+          <tbody>
+            <tr><td>대출 평균이자율</td><td>4.57</td><td>4.05</td><td>4.19</td><td>3.90</td></tr>
+            <tr><td>예금 평균이자율</td><td>2.44</td><td>2.05</td><td>2.18</td><td>1.90</td></tr>
+            <tr><td>예대금리차 (%p)</td><td>2.13</td><td>2.00</td><td>2.01</td><td>2.00</td></tr>
+            <tr class="hl"><td>NIM</td><td>1.78</td><td>1.74</td><td>1.74</td><td>1.76</td></tr>
+          </tbody>
+        </table>
+        <div class="unit" style="margin-top:1.6mm">주: 순이자이익 = 운용자산 × NIM. 국민은행 상반기 5.33조 → 5.66조 (+6.2%), 총여신 416.4조 → 428.9조</div>
+      </div>
+      <div class="src">자료: KB금융 2026 반기보고서 「주요 수익성 지표」, 은행업감독업무시행세칙 기준</div>
+    </div>
+  </div>
+
+  <div class="figrow" style="margin-top:6mm">
+    <!-- 그림 5 -->
+    <div class="fig">
+      <div class="t">그림 5. KB금융 부문별 세전이익 (2026 상반기, 연결조정 전 5.78조)</div>
+      <div class="body">
+        <svg viewBox="0 0 642 146" aria-label="부문별 세전이익">
+          <text x="0" y="7" style="font-size:7.6px;fill:#979ca2">(조원, 비중)</text>
+          <!-- x0=80, 440px = 3.03조 ; gridlines at 1,2,3조 -->
+          <g stroke="#eef0f2" stroke-width="0.7">
+            <line x1="225.2" y1="14" x2="225.2" y2="142"/><line x1="370.4" y1="14" x2="370.4" y2="142"/><line x1="515.6" y1="14" x2="515.6" y2="142"/>
+          </g>
+          <line x1="80" y1="14" x2="80" y2="142" stroke="#a3a8ae" stroke-width="0.7"/>
+          <g text-anchor="end" style="font-size:8.3px">
+            <text x="72" y="27" style="fill:#141414;font-weight:700">은행</text>
+            <text x="72" y="48">증권</text>
+            <text x="72" y="69">손해보험</text>
+            <text x="72" y="90">기타</text>
+            <text x="72" y="111">신용카드</text>
+            <text x="72" y="132">생명보험</text>
+          </g>
+          <rect x="80" y="19" width="440" height="10.5" fill="#168fa8"/>
+          <g fill="#b9bec4">
+            <rect x="80" y="40" width="156.8" height="10.5"/>
+            <rect x="80" y="61" width="97.3" height="10.5"/>
+            <rect x="80" y="82" width="78.4" height="10.5"/>
+            <rect x="80" y="103" width="43.6" height="10.5"/>
+            <rect x="80" y="124" width="24.7" height="10.5"/>
+          </g>
+          <g style="font-size:7.8px">
+            <text x="526" y="27" style="fill:#141414;font-weight:600">3.03조 · 52%</text>
+            <text x="242.8" y="48">1.08조 · 19%</text>
+            <text x="183.3" y="69">0.67조 · 12%</text>
+            <text x="164.4" y="90">0.54조 · 9%</text>
+            <text x="129.6" y="111">0.30조 · 5%</text>
+            <text x="110.7" y="132">0.17조 · 3%</text>
+          </g>
+        </svg>
+      </div>
+      <div class="src">자료: KB금융 2026 반기보고서 주석 「영업부문에 대한 공시 – 손익」. 연결조정·법인세 반영 후 반기순이익 3.93조</div>
+    </div>
+  </div>
+
+  <div class="out"><b>산출물</b>output/04_KB금융_부문별세전이익.csv · output/04_국민은행_NIM.csv</div>
+
+  <footer class="rf">
+    <div class="l">DART Study Research · 금융지주 학습노트 Vol.1<span>본 자료는 개인 학습 목적으로 작성되었으며 투자 권유가 아닙니다.</span></div>
+    <div class="n">5</div>
+  </footer>
+</section>
+
+
+<!-- =====================================================
+     PAGE 6 · SESSION 05 · PER과 PBR   (Type C · data page)
+     ===================================================== -->
+<section class="page">
+  <header class="rh">
+    <div class="l">DART STUDY RESEARCH</div>
+    <div class="r"><div class="d">2026. 9. 24</div><div class="s">금융지주 · Session 05</div></div>
+  </header>
+
+  <div class="col" style="margin-top:12mm">
+    <div class="part">Session 05<b>–</b>PER과 PBR</div>
+    <h1>ROE가 높을수록 PBR도 높다 — 예외는 iM금융</h1>
+    <div class="lead">금융지주 7개사의 피어 스냅샷(산출물 ①)을 만들었다. PBR은 BNK금융 0.45배에서 KB금융 1.03배까지 퍼져 있고(09.15 기준), 순서는 대체로 ROE를 따른다. 관계에서 벗어난 곳은 <b>iM금융</b> 하나다.</div>
+
+    <p style="margin-top:3.4mm"><span class="run">PER은 시간, PBR은 배수.</span> PER(주가 ÷ EPS) 10배는 지금 이익 10년치를 값으로 치른다는 뜻이고, PBR(주가 ÷ BPS) 0.5배는 장부에 적힌 주주 몫의 절반 값에 거래된다는 뜻이다. EPS는 순이익 ÷ 주식수, BPS는 자기자본 ÷ 주식수다.</p>
+    <p><span class="run">은행을 PBR로 보는 세 가지 이유.</span> 첫째, 자산이 대출·채권이라 장부 ≈ 실제 가치여서 장부가를 믿을 수 있다. 둘째, 충당금 판단에 따라 순이익이 출렁인다. 셋째, 자본 크기가 대출 규모를 결정해 자본이 곧 영업 한도다.</p>
+
+    <h2>iM금융은 ROE 9.4%인데 PBR 0.46배</h2>
+    <p>iM금융은 우리금융(ROE 8.9%, PBR 0.69)보다 잘 버는데 더 싸다. 관계에서 벗어난 지점은 저평가 후보다. 6회차에서 회귀 잔차로 판정한다.</p>
+  </div>
+
+  <!-- 그림 6 · dominant -->
+  <div class="figrow" style="margin-top:6mm">
+    <div class="fig">
+      <div class="t">그림 6. 금융지주 7개사 ROE와 PBR</div>
+      <div class="body">
+        <svg viewBox="0 0 642 236" aria-label="ROE와 PBR">
+          <!-- plot x 60..620 : ROE 7..16 ; y 18..208 : PBR 1.1..0.4 -->
+          <text x="0" y="8" style="font-size:7.6px;fill:#979ca2">PBR (배)</text>
+          <g stroke="#eef0f2" stroke-width="0.7">
+            <line x1="60" y1="18" x2="620" y2="18"/>
+            <line x1="60" y1="45.1" x2="620" y2="45.1"/>
+            <line x1="60" y1="99.4" x2="620" y2="99.4"/>
+            <line x1="60" y1="153.7" x2="620" y2="153.7"/>
+            <line x1="122.2" y1="18" x2="122.2" y2="208"/>
+            <line x1="246.7" y1="18" x2="246.7" y2="208"/>
+            <line x1="371.1" y1="18" x2="371.1" y2="208"/>
+            <line x1="495.6" y1="18" x2="495.6" y2="208"/>
+            <line x1="620" y1="18" x2="620" y2="208"/>
+          </g>
+          <line x1="60" y1="208" x2="620" y2="208" stroke="#a3a8ae" stroke-width="0.7"/>
+          <line x1="60" y1="18" x2="60" y2="208" stroke="#a3a8ae" stroke-width="0.7"/>
+          <g text-anchor="end" style="font-size:7.6px;fill:#979ca2">
+            <text x="53" y="47.8">1.0</text><text x="53" y="102.1">0.8</text>
+            <text x="53" y="156.4">0.6</text><text x="53" y="210.7">0.4</text>
+          </g>
+          <g text-anchor="middle" style="font-size:7.6px;fill:#979ca2">
+            <text x="122.2" y="219">8%</text><text x="246.7" y="219">10%</text><text x="371.1" y="219">12%</text>
+            <text x="495.6" y="219">14%</text><text x="620" y="219">16%</text>
+          </g>
+          <text x="620" y="232" text-anchor="end" style="font-size:7.6px;fill:#7a7f86">ROE (2026 상반기 연환산)</text>
+          <!-- points -->
+          <g fill="#7d848b">
+            <circle cx="433.3" cy="37.0" r="3.6"/>
+            <circle cx="427.1" cy="45.1" r="3.6"/>
+            <circle cx="557.8" cy="77.7" r="3.6"/>
+            <circle cx="277.8" cy="99.4" r="3.6"/>
+            <circle cx="178.2" cy="129.3" r="3.6"/>
+            <circle cx="97.3"  cy="194.4" r="3.6"/>
+          </g>
+          <circle cx="209.3" cy="191.7" r="4.4" fill="#168fa8"/>
+          <g style="font-size:8.2px;fill:#333">
+            <text x="440" y="34">KB 1.03</text>
+            <text x="420" y="54" text-anchor="end">JB 1.00</text>
+            <text x="557.8" y="70" text-anchor="middle">신한 0.88</text>
+            <text x="285" y="97">하나 0.80</text>
+            <text x="185" y="127">우리 0.69</text>
+            <text x="97.3" y="185" text-anchor="middle">BNK 0.45</text>
+          </g>
+          <text x="218" y="194.6" style="font-size:8.4px;fill:#141414;font-weight:700">iM 0.46</text>
+          <text x="258" y="194.6" style="font-size:7.6px;fill:#168fa8">← 6회차 검증</text>
+        </svg>
+      </div>
+      <div class="src">자료: DART 2026 반기보고서, 한국투자증권 Open API 시세(2026.09.15). PBR = 시가총액 ÷ 반기말 지배주주지분</div>
+    </div>
+  </div>
+
+  <!-- 표 5 -->
+  <div class="figrow" style="margin-top:6mm">
+    <div class="fig">
+      <div class="t">표 5. 산출물 ① 금융지주 피어 스냅샷</div>
+      <div class="body">
+        <table class="rt">
+          <thead><tr><th>종목</th><th>현재가 (원)</th><th>시총 (조)</th><th>PBR (배)</th><th>ROE</th><th>PER (배)</th></tr></thead>
+          <tbody>
+            <tr><td>KB금융</td><td>176,600</td><td>62.6</td><td>1.03</td><td>13.0%</td><td>11.68</td></tr>
+            <tr><td>JB금융지주</td><td>32,400</td><td>6.0</td><td>1.00</td><td>12.9%</td><td>8.79</td></tr>
+            <tr><td>신한지주</td><td>112,700</td><td>52.9</td><td>0.88</td><td>15.0%</td><td>11.18</td></tr>
+            <tr><td>하나금융지주</td><td>138,300</td><td>37.5</td><td>0.80</td><td>10.5%</td><td>9.80</td></tr>
+            <tr><td>우리금융지주</td><td>36,450</td><td>26.9</td><td>0.69</td><td>8.9%</td><td>8.64</td></tr>
+            <tr class="hl"><td>iM금융지주</td><td>18,330</td><td>2.9</td><td>0.46</td><td>9.4%</td><td>6.80</td></tr>
+            <tr><td>BNK금융지주</td><td>16,130</td><td>4.9</td><td>0.45</td><td>7.6%</td><td>6.28</td></tr>
+          </tbody>
+        </table>
+        <div class="unit" style="margin-top:1.6mm">주: 2026.09.15 기준. PER은 한투 제공값(직전 결산 EPS 기준)</div>
+        <div class="note" style="margin-top:1.8mm;font-size:7.2pt"><em>주의</em>같은 회사 PBR이 두 개다. 한투는 직전 결산 BPS(KB 1.07), 우리는 반기말 자본(1.03)을 쓴다. 틀린 게 아니라 기준 시점을 밝히지 않는 것이 틀린 것이다.</div>
+      </div>
+      <div class="src">자료: DART, 한국투자증권 Open API</div>
+    </div>
+  </div>
+
+  <div class="out"><b>산출물</b>output/05_금융지주_피어스냅샷.csv</div>
+
+  <footer class="rf">
+    <div class="l">DART Study Research · 금융지주 학습노트 Vol.1<span>본 자료는 개인 학습 목적으로 작성되었으며 투자 권유가 아닙니다.</span></div>
+    <div class="n">6</div>
+  </footer>
+</section>
+
+
+<!-- =====================================================
+     PAGE 7 · APPENDIX · 복습 도구   (text + tables)
+     ===================================================== -->
+<section class="page">
+  <header class="rh">
+    <div class="l">DART STUDY RESEARCH</div>
+    <div class="r"><div class="d">2026. 9. 24</div><div class="s">금융지주 · Appendix</div></div>
+  </header>
+
+  <div class="col" style="margin-top:36mm">
+    <div class="part">Appendix<b>–</b>복습 도구</div>
+    <h1>다시 만날 함정 4가지와 자가점검</h1>
+    <div class="lead">데이터 처리 주의점, 5분 퀴즈, 정정 기록, 다음 회차 예고를 한 장에 모았다. 전체 10회차 중 <b>5회차</b>까지 마쳤고, 다음은 06회차 PBR–ROE 회귀다.</div>
+
+    <h2>데이터 함정 4가지</h2>
+    <p>1~5회차에서 숫자가 틀어진 지점은 대부분 개념이 아니라 데이터의 기준에서 나왔다. 반기 손익이 3개월치인지 누적인지, 숫자가 지주(연결)의 것인지 은행(자회사)의 것인지, BPS가 어느 시점 자본 기준인지, 그리고 회사마다 계정 이름이 다르다는 점이다(표 6).</p>
+  </div>
+
+  <div class="figrow" style="margin-top:5mm">
+    <div class="fig">
+      <div class="t">표 6. 데이터 함정 4가지</div>
+      <div class="body">
+        <table class="rt">
+          <thead><tr><th style="width:6%">#</th><th class="l" style="width:40%">함정</th><th class="l">대처</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="l">반기 손익 3개월치 vs 누적</td><td class="l">누적(thstrm_add_amount) 사용</td></tr>
+            <tr><td>2</td><td class="l">지주(연결) vs 은행(자회사)</td><td class="l">어느 실체의 숫자인지 표기</td></tr>
+            <tr><td>3</td><td class="l">BPS 기준 시점</td><td class="l">“반기말 자본 기준” 등 명시</td></tr>
+            <tr><td>4</td><td class="l">회사마다 다른 계정 이름</td><td class="l">여러 이름을 순서대로 찾는 매핑</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="figrow two" style="margin-top:7mm">
+    <!-- 5분 자가점검 -->
+    <div class="fig">
+      <div class="t">5분 자가점검</div>
+      <div class="body qa" style="padding-top:.4mm">
+        <div class="q"><b>Q1</b><span>은행 재무상태표에서 고객 예금은 자산인가, 부채인가?</span></div>
+        <div class="q"><b>Q2</b><span>반기 순이익으로 ROE를 구할 때 ×2를 하는 이유는?</span></div>
+        <div class="q"><b>Q3</b><span>ROA 1%, 레버리지 12배인 은행의 ROE는?</span></div>
+        <div class="q"><b>Q4</b><span>NIM이 예대금리차보다 낮게 나오는 이유는?</span></div>
+        <div class="q"><b>Q5</b><span>은행을 PER보다 PBR로 보는 이유를 하나 말한다면?</span></div>
+        <div class="ans"><b>정답</b>Q1 부채(돌려줄 돈) · Q2 반기 이익을 1년치로 맞추려고 · Q3 12% · Q4 분모에 이자 적은 국채·예치금까지 포함 · Q5 장부가 신뢰 / 이익 변동 / 자본 = 영업 한도</div>
+      </div>
+    </div>
+
+    <!-- 정정 기록 -->
+    <div class="fig">
+      <div class="t">표 7. 정정 기록</div>
+      <div class="body">
+        <table class="rt">
+          <thead><tr><th>회차</th><th class="l">당초</th><th class="l">정정</th><th class="l">원인</th></tr></thead>
+          <tbody>
+            <tr><td>02</td><td class="l">충당금 −0.52조</td><td class="l">−1.01조</td><td class="l">3개월치를 누적으로 착오</td></tr>
+            <tr><td>03</td><td class="l">ROE 13.1%</td><td class="l">13.0%</td><td class="l">분자를 지배주주 순이익(3.88조)으로</td></tr>
+          </tbody>
+        </table>
+        <div class="unit" style="margin-top:1.6mm">주: 두 건 모두 개념은 그대로, 숫자만 수정. 함정 1·2의 실제 사례</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="figrow three" style="margin-top:11mm">
+    <div class="mini">
+      <h4>Next · 06회차</h4>
+      <div class="li"><b>PBR–ROE 회귀</b>7개 점에 회귀선을 긋는다</div>
+      <div class="li"><b>잔차</b>선보다 아래 = 버는 것에 비해 싸다</div>
+      <div class="li"><b>검증 대상</b>iM금융지주</div>
+      <div class="li"><b>도구</b>R (계량경제학 회귀 그대로)</div>
+    </div>
+    <div class="mini">
+      <h4>남은 로드맵</h4>
+      <div class="li"><b>07 주주환원</b>배당·자사주</div>
+      <div class="li"><b>08 RIM</b>목표주가</div>
+      <div class="li"><b>09 자동화</b>공시 모니터링</div>
+      <div class="li"><b>10 리포트</b>최종 산출물</div>
+    </div>
+    <div class="mini">
+      <h4>데이터 출처</h4>
+      <div class="li"><b>DART</b>list.json · fnlttSinglAcntAll · document.xml</div>
+      <div class="li"><b>한국투자증권</b>현재가 · 투자의견(목표주가)</div>
+      <div class="li"><b>기준 보고서</b>KB금융 2026 반기보고서 20260814004200</div>
+    </div>
+  </div>
+
+  <footer class="rf">
+    <div class="l">DART Study Research · 금융지주 학습노트 Vol.1<span>본 자료는 개인 학습 목적으로 작성되었으며 투자 권유가 아닙니다. © 임명호 · DART Study</span></div>
+    <div class="n">7</div>
+  </footer>
+</section>
+
+
+</body>
+</html>

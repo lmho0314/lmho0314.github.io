@@ -1,0 +1,16 @@
+---
+// 10회차 커리큘럼 타임라인 (SMIC Activity 커리큘럼 구성 참고)
+import { CURRICULUM, SESSIONS, u } from '../lib/site';
+const ST = { done: '완료', next: '다음 회차', plan: '예정' } as const;
+const has = (n: number) => SESSIONS.some((s: any) => s.session === n);
+---
+<ol class="tl">
+  {CURRICULUM.map((c) => (
+    <li class={c.status}>
+      <div class="no">{String(c.n).padStart(2, '0')}</div>
+      <div class="ti">{has(c.n) ? <a href={u(`/research/session-${String(c.n).padStart(2, '0')}`)}>{c.title}</a> : c.title}</div>
+      <div class="ou">{c.out}</div>
+      <div class="st">{ST[c.status as keyof typeof ST]}{c.date ? ` · ${c.date.slice(5).replace('-', '.')}` : ''}</div>
+    </li>
+  ))}
+</ol>

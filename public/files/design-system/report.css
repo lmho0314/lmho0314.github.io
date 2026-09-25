@@ -1,0 +1,138 @@
+
+/* =========================================================
+   EDITORIAL SYSTEM v2 — DART Study Research
+   A4 210×297 · usable 170mm · text column 134mm (79%)
+   v2: denser type, quieter metadata, teal accent, one blue subhead per page
+   ========================================================= */
+:root{
+  --ink:#141414;        /* headline, titles */
+  --body:#333;          /* body text */
+  --muted:#7a7f86;      /* labels, header meta */
+  --faint:#979ca2;      /* source, footnote */
+  --rule:#a3a8ae;       /* header/footer rules */
+  --hair:#dfe2e5;       /* table rules */
+  --grid:#eef0f2;       /* chart gridlines */
+  --accent:#168fa8;     /* single accent — restrained blue-cyan */
+  --accent-2:#9fd0db;   /* tint of accent */
+  --gray-series:#b9bec4;
+  --shade:#eef5f7;      /* pale highlight row */
+  --thead:#f4f5f6;
+}
+@page{ size:A4; margin:0 }
+*{ box-sizing:border-box; margin:0; padding:0 }
+html,body{ background:#fff }
+body{
+  font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  color:var(--body);
+  font-feature-settings:"tnum" 1;
+  -webkit-font-smoothing:antialiased;
+}
+.page{
+  width:210mm; height:297mm; position:relative; overflow:hidden;
+  padding:11mm 20mm 0 20mm;
+  page-break-after:always; break-after:page;
+}
+.page:last-child{ page-break-after:auto; break-after:auto }
+/* series identity: thin single-colour edge rule */
+.page::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:1.6mm; background:var(--accent) }
+
+/* ---------- running header (metadata, not navigation) ---------- */
+.rh{ display:flex; justify-content:space-between; align-items:flex-end;
+     padding-bottom:1.8mm; border-bottom:.4pt solid var(--rule) }
+.rh .l{ font-size:6.2pt; letter-spacing:.1em; color:var(--muted); font-weight:500 }
+.rh .r{ text-align:right; line-height:1.4 }
+.rh .r .d{ font-size:5.8pt; color:var(--faint) }
+.rh .r .s{ font-size:6.8pt; color:#5f646a; font-weight:400 }
+
+/* ---------- running footer ---------- */
+.rf{ position:absolute; left:20mm; right:20mm; bottom:10mm;
+     border-top:.4pt solid var(--rule); padding-top:1.6mm;
+     display:flex; justify-content:space-between; align-items:flex-start }
+.rf .l{ font-size:6pt; color:var(--muted); line-height:1.5 }
+.rf .l span{ display:block; color:var(--faint); font-size:5.6pt }
+.rf .n{ font-size:7.2pt; color:var(--ink) }
+
+/* ---------- text column ---------- */
+.col{ margin:0 18mm }
+.part{ font-size:9pt; font-weight:400; color:var(--muted); letter-spacing:-.005em }
+.part b{ font-weight:400; margin:0 .45em }
+h1{ font-size:15.5pt; word-break:keep-all; font-weight:700; color:var(--ink);
+    letter-spacing:-.035em; line-height:1.3; margin-top:.8mm }
+.lead{ font-size:8.5pt; font-weight:400; color:#161616; line-height:1.6;
+       margin-top:3mm; text-align:justify; letter-spacing:-.015em }
+.lead b{ font-weight:700; color:var(--ink) }
+h2{ font-size:8.4pt; font-weight:500; color:var(--accent); letter-spacing:-.01em;
+    margin-top:4.6mm; margin-bottom:1.3mm }
+h3{ font-size:8pt; font-weight:700; color:var(--ink); letter-spacing:-.015em;
+    margin-top:3.4mm; margin-bottom:1mm }
+p{ font-size:7.9pt; font-weight:350; line-height:1.52; text-align:justify;
+   letter-spacing:-.01em; color:var(--body) }
+p + p{ margin-top:1.7mm }
+p strong{ font-weight:600; color:#1c1c1c }
+p .run{ font-weight:700; color:var(--ink) }   /* inline opening phrase */
+.note{ font-size:7.5pt; line-height:1.55; color:var(--body); margin-top:1.8mm }
+.note em{ font-style:normal; font-weight:700; color:var(--ink); margin-right:.45em }
+
+/* ---------- figures / tables ---------- */
+.figrow{ display:grid; gap:0 8mm; margin-top:6mm }
+.figrow.two{ grid-template-columns:1fr 1fr }
+.fig{ display:flex; flex-direction:column }
+.fig .t{ font-size:7.8pt; font-weight:700; color:var(--ink); letter-spacing:-.02em;
+         padding-bottom:1.3mm; border-bottom:.6pt solid #333 }
+.fig .body{ flex:1; padding-top:2mm }
+.fig .src{ border-top:.4pt solid var(--rule); padding-top:1.1mm; margin-top:1.8mm;
+           font-size:5.9pt; color:var(--faint); line-height:1.5 }
+svg{ display:block; width:100%; height:auto; overflow:visible }
+svg text{ font-family:"Noto Sans CJK KR","Noto Sans KR","Apple SD Gothic Neo",sans-serif; fill:#5a5f65; font-size:8px }
+
+table.rt{ width:100%; border-collapse:collapse; font-size:7pt }
+table.rt th{ background:var(--thead); font-weight:500; color:#4a4f55; padding:1.3mm 1.5mm;
+             border-bottom:.4pt solid var(--hair); text-align:right; white-space:nowrap }
+table.rt td{ padding:1.3mm 1.5mm; border-bottom:.4pt solid var(--hair); text-align:right;
+             color:#333; font-weight:350; white-space:nowrap }
+table.rt th:first-child, table.rt td:first-child{ text-align:left }
+table.rt td.l, table.rt th.l{ text-align:left }
+table.rt tr.hl td{ background:var(--shade); font-weight:700; color:var(--ink) }
+.unit{ font-size:5.9pt; color:var(--faint); line-height:1.55 }
+
+/* small analytical equation (Fig. 4) */
+.eqn{ display:grid; grid-template-columns:auto 1fr; column-gap:1.4mm; row-gap:.3mm;
+      font-size:7.3pt; color:#333; line-height:1.5; margin-bottom:2.4mm }
+.eqn .k{ color:var(--ink); font-weight:500 }
+.eqn .r b{ font-weight:700; color:var(--ink) }
+
+.out{ font-size:6.2pt; color:var(--faint); margin-top:3.4mm }
+.out b{ font-weight:500; color:var(--muted); margin-right:.6em }
+
+/* ---------- v2 additions for full document ---------- */
+h1.cover{ font-size:24pt; letter-spacing:-.04em; margin-top:1.2mm }
+.sub{ font-size:9.4pt; color:#2a2a2a; font-weight:400; margin-top:2.2mm; letter-spacing:-.015em }
+.sub2{ font-size:6.9pt; color:var(--muted); margin-top:1.2mm }
+.figrow.three{ grid-template-columns:1fr 1fr 1fr }
+.figrow.w6040{ grid-template-columns:1.25fr 1fr }
+
+/* one-page map: number + thin rule + text */
+.map .r{ display:grid; grid-template-columns:7.5mm 1fr auto; align-items:baseline;
+         padding:1.35mm 0; border-bottom:.4pt solid var(--hair) }
+.map .n{ font-size:6.8pt; color:var(--muted); font-weight:500 }
+.map .n.next{ color:var(--accent) }
+.map .f{ font-size:7.5pt; color:var(--ink); font-weight:500; letter-spacing:-.01em }
+.map .d{ font-size:6.5pt; color:var(--faint) }
+
+/* quiz list */
+.qa .q{ display:grid; grid-template-columns:7mm 1fr; padding:1.35mm 0;
+        border-bottom:.4pt solid var(--hair); font-size:7.4pt; color:#333; line-height:1.45 }
+.qa .q b{ font-weight:700; color:var(--ink) }
+.ans{ font-size:6.8pt; color:#555; line-height:1.55; margin-top:1.8mm }
+.ans b{ color:var(--ink); font-weight:700; margin-right:.4em }
+
+/* small definition blocks (appendix / cover) */
+.mini h4{ font-size:7.6pt; font-weight:700; color:var(--ink); letter-spacing:-.02em;
+          padding-bottom:1.2mm; border-bottom:.6pt solid #333; margin-bottom:1.3mm }
+.mini .li{ font-size:7pt; line-height:1.5; color:#444; padding:.9mm 0; border-bottom:.4pt solid var(--hair) }
+.mini .li b{ font-weight:700; color:var(--ink); margin-right:.45em }
+.mini .li:last-child{ border-bottom:none }
+
+table.rt td.num, table.rt th.num{ text-align:right }
+table.rt td.c{ text-align:center }
+table.rt.wrap td{ white-space:normal }

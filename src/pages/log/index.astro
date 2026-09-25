@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import { LOGS, u } from '../../lib/site';
+---
+<Base title="Log">
+  <div class="wrap">
+    <section class="phead">
+      <div class="eyebrow">Log</div>
+      <h1>결정 기록</h1>
+      <p class="lead">무엇이 문제였고, 어떤 선택지 중에 무엇을 골랐는지. 한 파일에 한 결정씩 남긴다.</p>
+      <nav class="subtabs" aria-label="하위 메뉴"><a href={u('/curriculum')}>커리큘럼</a><a href={u('/log')} aria-current="page">결정 기록</a></nav>
+    </section>
+    <ul class="rows" style="border-top:1px solid var(--ink);margin-top:36px">
+      {LOGS.map((l: any) => (
+        <li class="row" style="grid-template-columns:110px minmax(0,1fr) 180px 130px">
+          <span class="d">{l.date}</span>
+          <span class="t"><span class="e">Log · {(l.tags || []).join(', ')}</span><a href={u(`/log/${l.slug}`)}>{l.title}</a><span class="s">{l.series}</span></span>
+          <span class="tg">{l.series}</span>
+          <span class="f">상태 · {l.status}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

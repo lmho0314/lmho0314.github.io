@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Archive from '../components/Archive.astro';
+import Timeline from '../components/Timeline.astro';
+import { SITE, VOL1, LOGS, allItems, u } from '../lib/site';
+const items = allItems();
+---
+<Base>
+  <div class="wrap">
+    <section class="phead grid12" style="padding-top:72px">
+      <div class="span8">
+        <div class="eyebrow">DART Study Research</div>
+        <h1 style="font-size:40px">공시에서 숫자를 꺼내<br />직접 계산하고, 그 과정을 기록한다</h1>
+        <p class="lead">DART 공시와 한국투자증권 Open API로 업종과 기업을 분석한 리포트, 회차별 노트, 산출 데이터, 결정 기록을 한곳에 쌓는 개인 리서치 아카이브.</p>
+      </div>
+      <div class="span4" style="align-self:end">
+        <dl class="meta">
+          <dt>작성</dt><dd>{SITE.author}</dd>
+          <dt>진행 시리즈</dt><dd>금융지주 · Vol.1 (1~5회차)</dd>
+          <dt>데이터</dt><dd>DART · 한국투자증권 Open API</dd>
+          <dt>최근 게시</dt><dd>{items[0].date}</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="block grid12">
+      <div class="span8">
+        <h2 class="sec">최신 리포트</h2>
+        <div class="eyebrow">{VOL1.eyebrow} · {VOL1.date}</div>
+        <h3 style="margin:4px 0 0;font-size:26px;letter-spacing:-.02em"><a href={u('/research/vol1')}>{VOL1.title}</a></h3>
+        <p class="lead" style="font-size:16px">{VOL1.sub}. KB금융을 중심으로 공시 → 재무제표 → ROE → NIM → PER·PBR 순서로 금융지주 7개사를 비교했다.</p>
+        <p style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><a class="btn solid" href={u('/research/vol1')}>READ MORE <span aria-hidden="true">→</span></a><a class="btn" href={u('/files/vol1/vol1.pdf')}>PDF <span aria-hidden="true">↓</span></a></p>
+      </div>
+      <div class="span4">
+        <a href={u('/research/vol1')}><img src={u('/img/vol1/vol1_p1.jpg')} alt="공시에서 PBR까지 표지" style="width:100%;border:1px solid var(--hair);display:block" /></a>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="sec">커리큘럼 <a class="small muted" style="font-weight:400;margin-left:8px" href={u('/curriculum')}>전체 보기 →</a></h2>
+      <Timeline />
+    </section>
+
+    <section class="block">
+      <h2 class="sec">최근 기록 <a class="small muted" style="font-weight:400;margin-left:8px" href={u('/research')}>아카이브 전체 →</a></h2>
+      <Archive items={items} wall={false} controls={false} limit={6} />
+    </section>
+  </div>
+</Base>

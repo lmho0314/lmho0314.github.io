@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Timeline from '../components/Timeline.astro';
+import { CURRICULUM, SESSIONS, u } from '../lib/site';
+const done = CURRICULUM.filter((c) => c.status === 'done').length;
+---
+<Base title="Curriculum">
+  <div class="wrap">
+    <section class="phead">
+      <div class="eyebrow">Curriculum</div>
+      <h1>10회차 커리큘럼</h1>
+      <p class="lead">증권사 리서치 업무의 순서(공시 확인 → 재무제표 → 수익성 → 밸류에이션 → 목표주가 → 자동화)를 공개 자료로 따라간다. 현재 {done}회차까지 완료.</p>
+      <nav class="subtabs" aria-label="하위 메뉴"><a href={u('/curriculum')} aria-current="page">커리큘럼</a><a href={u('/log')}>결정 기록</a></nav>
+    </section>
+    <section class="block"><Timeline /></section>
+    <section class="block">
+      <h2 class="sec">회차별 노트</h2>
+      <table class="t">
+        <thead><tr><th>회차</th><th>제목</th><th>날짜</th><th>대상</th><th>산출물</th></tr></thead>
+        <tbody>
+          {SESSIONS.filter((s: any) => s.session > 0).map((s: any) => (
+            <tr><td>{String(s.session).padStart(2, '0')}</td><td><a href={u(`/research/${s.slug}`)}>{s.title.replace(/^\d+회차 — /, '')}</a></td><td>{s.date}</td><td class="small">{s.target}</td><td class="small">{(s.outputs || []).join(', ') || '—'}</td></tr>
+          ))}
+          {CURRICULUM.filter((c) => c.status !== 'done').map((c) => (
+            <tr><td class="muted">{String(c.n).padStart(2, '0')}</td><td class="muted">{c.title}</td><td class="muted">{c.status === 'next' ? '다음' : '예정'}</td><td class="small muted">—</td><td class="small muted">{c.out}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  </div>
+</Base>

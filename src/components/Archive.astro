@@ -1,0 +1,101 @@
+---
+// 아카이브 목록: 검색(SMIC식) + 분류 탭 + 커버리지 월(기업 필터) + 정렬
+import { COMPANIES, TYPE_LABEL, u, type Item } from '../lib/site';
+interface Props { items: Item[]; wall?: boolean; limit?: number; controls?: boolean; }
+const { items, wall = true, limit, controls = true } = Astro.props;
+const list = limit ? items.slice(0, limit) : items;
+const cats = [['all', '전체'], ['report', TYPE_LABEL.report], ['session', TYPE_LABEL.session], ['data', TYPE_LABEL.data], ['log', TYPE_LABEL.log]] as const;
+const count = (c: string) => (c === 'all' ? list.length : list.filter((i) => i.type === c).length);
+const mix = (t: number) => {
+  const a = [0xe3, 0xf1, 0xf4], b = [0x0f, 0x6f, 0x84];
+  return 'rgb(' + a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(',') + ')';
+};
+const tiles = COMPANIES.map((c) => { const t = (c.pbr - 0.45) / (1.03 - 0.45); return { ...c, bg: mix(t), fg: t > 0.5 ? '#fff' : '#141414' }; });
+---
+<div data-archive>
+  {controls && (
+    <form class="search" role="search" onsubmit="return false">
+      <label for="q">검색</label>
+      <input id="q" type="search" placeholder="제목, 기업, 파일명으로 검색" data-q autocomplete="off" />
+      <button class="btn" type="submit">SEARCH</button>
+    </form>
+  )}
+
+  {wall && (
+    <section aria-labelledby="cov" style="margin-top:28px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+        <h2 id="cov" style="margin:0;font-size:15px;color:var(--ink)">커버리지 — 금융지주 7개사 <span class="muted small" style="font-weight:400">칸을 누르면 그 기업이 들어간 기록만 남는다</span></h2>
+        <div class="legend"><span>색 = PBR (0.45 → 1.03배) · 2026.09.15</span><i aria-hidden="true"></i><button type="button" class="tbtn" data-clear hidden style="padding:0;color:var(--accent-ink)">기업 필터 해제</button></div>
+      </div>
+      <div class="wall">
+        {tiles.map((t) => (
+          <button type="button" data-co={t.name} aria-pressed="false" style={`background:${t.bg};color:${t.fg}`}>
+            <span class="nm">{t.name}</span>
+            <span style="display:flex;justify-content:space-between;align-items:baseline"><span class="v">{t.pbr.toFixed(2)}<small> 배</small></span><span class="r">ROE {t.roe.toFixed(1)}%</span></span>
+          </button>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {controls && (
+    <div class="bar">
+      <div class="tabs" role="tablist" aria-label="분류">
+        {cats.map(([k, l]) => <button type="button" class="tbtn" role="tab" data-cat={k} aria-selected={k === 'all' ? 'true' : 'false'}>{l}<span class="n" data-count={k}>{count(k)}</span></button>)}
+      </div>
+      <div class="right"><span data-shown>{list.length}건</span>
+        <label for="sort" class="muted">정렬</label>
+        <select id="sort" data-sort><option value="new">최신순</option><option value="old">오래된순</option></select>
+      </div>
+    </div>
+  )}
+
+  <ul class="rows" data-rows style={controls ? '' : 'border-top:1px solid var(--ink)'}>
+    {list.map((it, i) => (
+      <li class="row" data-type={it.type} data-cos={it.cos.join('|')} data-date={it.date} data-i={i} data-text={(it.title + ' ' + it.sub + ' ' + it.target + ' ' + it.eyebrow).toLowerCase()}>
+        <span class="d">{it.date}</span>
+        <span class="t"><span class="e">{it.eyebrow}</span><a href={u(it.href)}>{it.title}</a><span class="s">{it.sub}</span></span>
+        <span class="tg">{it.target}</span>
+        <span class="f">{TYPE_LABEL[it.type]} · {it.format}</span>
+      </li>
+    ))}
+  </ul>
+  <p class="empty" data-empty hidden>조건에 맞는 기록이 없다. 분류나 기업 필터를 바꿔 본다.</p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-archive]').forEach((root) => {
+    const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-rows] > li'));
+    const ul = root.querySelector<HTMLElement>('[data-rows]')!;
+    const st = { cat: 'all', co: '', q: '', sort: 'new' };
+    const apply = () => {
+      const base = rows.filter((r) => (!st.co || (r.dataset.cos || '').split('|').includes(st.co)) && (!st.q || (r.dataset.text || '').includes(st.q)));
+      root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+        const k = el.dataset.count!;
+        el.textContent = String(k === 'all' ? base.length : base.filter((r) => r.dataset.type === k).length);
+      });
+      const shown = base.filter((r) => st.cat === 'all' || r.dataset.type === st.cat);
+      rows.forEach((r) => (r.hidden = !shown.includes(r)));
+      const sorted = [...rows].sort((a, b) => {
+        const d = (a.dataset.date || '').localeCompare(b.dataset.date || '') || Number(b.dataset.i) - Number(a.dataset.i);
+        return st.sort === 'new' ? -d : d;
+      });
+      sorted.forEach((r) => ul.appendChild(r));
+      const s = root.querySelector('[data-shown]');
+      if (s) s.textContent = `${shown.length}건${st.co ? ' · ' + st.co + ' 포함' : ''}`;
+      root.querySelector<HTMLElement>('[data-empty]')!.hidden = shown.length > 0;
+      root.querySelectorAll<HTMLElement>('[data-co]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.co === st.co)));
+      root.querySelectorAll<HTMLElement>('[data-cat]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.cat === st.cat)));
+      const clr = root.querySelector<HTMLElement>('[data-clear]'); if (clr) clr.hidden = !st.co;
+    };
+    root.querySelectorAll<HTMLElement>('[data-cat]').forEach((b) => b.addEventListener('click', () => { st.cat = b.dataset.cat!; apply(); }));
+    root.querySelectorAll<HTMLElement>('[data-co]').forEach((b) => b.addEventListener('click', () => { st.co = st.co === b.dataset.co ? '' : b.dataset.co!; apply(); }));
+    root.querySelector('[data-clear]')?.addEventListener('click', () => { st.co = ''; apply(); });
+    root.querySelector<HTMLInputElement>('[data-q]')?.addEventListener('input', (e) => { st.q = (e.target as HTMLInputElement).value.trim().toLowerCase(); apply(); });
+    root.querySelector<HTMLSelectElement>('[data-sort]')?.addEventListener('change', (e) => { st.sort = (e.target as HTMLSelectElement).value; apply(); });
+    const p = new URLSearchParams(location.search);
+    if (p.get('co')) st.co = p.get('co')!;
+    if (p.get('type')) st.cat = p.get('type')!;
+    if (p.get('co') || p.get('type')) apply();
+  });
+</script>
