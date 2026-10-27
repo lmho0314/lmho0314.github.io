@@ -10,7 +10,7 @@ const BLOG = 'https://blog.naver.com/acidred-';
 const CV = [
   {
     group: '학력',
-    rows: [{ when: '2023.03 –', what: '중앙대학교 경제학부', note: '재학 중 (2학년) · 군 복무 후 2026년 복학' }],
+    rows: [{ when: '2023.03 –', what: '중앙대학교 경제학부', note: '재학 중 · 군 복무 후 2026년 복학' }],
   },
   {
     group: '자격',
@@ -79,9 +79,9 @@ const CV = [
         <figure class="portrait">
           <img
             src={u('/img/about/profile.jpg')}
-            srcset={`${u('/img/about/profile.jpg')} 640w, ${u('/img/about/profile@2x.jpg')} 1280w`}
+            srcset={`${u('/img/about/profile.jpg')} 480w, ${u('/img/about/profile@2x.jpg')} 960w`}
             sizes="140px"
-            width="640" height="640"
+            width="480" height="600"
             alt="임명호 프로필 사진"
           />
         </figure>
@@ -103,7 +103,7 @@ const CV = [
 <style>
   /* 요약 카드 위 작은 사진 */
   .portrait { margin: 28px 0 16px; width: 140px; }
-  .portrait img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border: 1px solid var(--hair); background: var(--thead); }
+  .portrait img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border: 1px solid var(--hair); background: var(--thead); }
   @media (max-width: 860px) { .portrait { margin-top: 40px; width: 120px; } }
 
   /* 지금 하는 일 */
