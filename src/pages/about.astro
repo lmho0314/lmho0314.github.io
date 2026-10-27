@@ -1,19 +1,70 @@
 ---
 import Base from '../layouts/Base.astro';
-import { SITE, u } from '../lib/site';
+import { SITE, CURRICULUM, u } from '../lib/site';
+
+// 커리큘럼 진행 현황은 site.ts의 CURRICULUM에서 자동 계산
+const doneN = CURRICULUM.filter((c) => c.status === 'done').length;
+const BLOG = 'https://blog.naver.com/acidred-';
+
+// 이력 — 새 항목은 해당 그룹 맨 위에 추가 (최신순). note가 비어 있으면 회색 설명줄을 그리지 않는다.
+const CV = [
+  {
+    group: '학력',
+    rows: [{ when: '2023.03 –', what: '중앙대학교 경제학부', note: '재학 중 (2학년) · 군 복무 후 2026년 복학' }],
+  },
+  {
+    group: '자격',
+    rows: [{ when: '2025.07', what: '투자자산운용사', note: '한국금융투자협회 제42회 합격' }],
+  },
+  {
+    group: '활동',
+    rows: [
+      { when: '2026.10 –', what: '한국투자증권 대학생 모의투자대회', note: 'AI리그 · 한투 Open API 주문 자동화' },
+      { when: '2026.08 –', what: 'KB-YMCA 대학생경제금융교육봉사단 폴라리스+ 27기', note: '서울 지역 단원 · 아동 경제금융교육' },
+      { when: '2026.03 – 06', what: '한국경제인협회 EIC(Elite Intensive Course)', note: '' },
+    ],
+  },
+];
 ---
-<Base title="About">
+<Base title="About" description="임명호 — 중앙대학교 경제학부. 공시와 시세로 직접 계산하고 기록하는 개인 리서치 아카이브.">
   <div class="wrap">
     <section class="phead">
       <div class="eyebrow">About</div>
       <h1>이 아카이브에 대하여</h1>
       <p class="lead">{SITE.tagline} 공시와 시세라는 공개 자료만으로 무엇을 어디까지 계산할 수 있는지, 틀린 곳은 어디였는지를 함께 남긴다.</p>
     </section>
+
     <section class="block grid12">
       <div class="span8 prose">
         <h2 class="acc">작성자</h2>
-        <p>경제학과 학부생.</p>
-        <h2 class="acc">방법</h2>
+        <p>임명호</p>
+
+        <h2 class="acc">지금 하는 일</h2>
+        <ul class="now">
+          <li><b>금융지주 기업분석</b> 공시와 시세로 7개사를 비교하고, KB금융 커버리지 노트까지 {doneN}회차를 마쳤다. <a href={u('/research')}>Research →</a></li>
+          <li><b>블로그 연재</b> 네이버 블로그 「공시에서 목표주가까지, 혼자서 해보는 기업분석」 <a href={BLOG} target="_blank" rel="noopener">블로그 바로가기 ↗</a></li>
+          <li><b>모의투자</b> 한국투자증권 대학생 모의투자대회 AI리그 — 코어-위성으로 운용하고, 주문은 한투 API로 자동화한다.</li>
+          <li><b>금융교육 봉사</b> KB-YMCA 폴라리스+ 27기</li>
+        </ul>
+
+        <h2 class="acc">이력</h2>
+        <div class="cv">
+          {CV.map((g) => (
+            <div class="cv-g">
+              <h3>{g.group}</h3>
+              <ul>
+                {g.rows.map((r) => (
+                  <li>
+                    <span class="when">{r.when}</span>
+                    <span class="what">{r.what}{r.note && <span class="note">{r.note}</span>}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <h2 class="acc">이 아카이브의 방법</h2>
         <p>원자료(DART 공시·재무제표, 한국투자증권 Open API 시세) → 파이썬 스크립트 → 산출물 CSV → 회차 노트 → 리포트. 모든 산출물은 <a href={u('/data')}>Data</a>에서 내려받을 수 있다.</p>
         <h2 class="acc">원칙</h2>
         <ul>
@@ -25,12 +76,53 @@ import { SITE, u } from '../lib/site';
         <p><a href="mailto:appoint03@cau.ac.kr">appoint03@cau.ac.kr</a></p>
       </div>
       <aside class="span4">
+        <figure class="portrait">
+          <img
+            src={u('/img/about/profile.jpg')}
+            srcset={`${u('/img/about/profile.jpg')} 640w, ${u('/img/about/profile@2x.jpg')} 1280w`}
+            sizes="140px"
+            width="640" height="640"
+            alt="임명호 프로필 사진"
+          />
+        </figure>
         <dl class="meta">
+          <dt>이름</dt><dd>임명호</dd>
+          <dt>소속</dt><dd>중앙대학교 경제학부</dd>
+          <dt>자격</dt><dd>투자자산운용사</dd>
+          <dt>연락</dt><dd><a href="mailto:appoint03@cau.ac.kr">appoint03@cau.ac.kr</a></dd>
+          <dt>블로그</dt><dd><a href={BLOG} target="_blank" rel="noopener">blog.naver.com/acidred-</a></dd>
           <dt>시작</dt><dd>2026-09-12 (1회차)</dd>
-          <dt>커리큘럼</dt><dd>10회차 중 5회차 완료</dd>
+          <dt>커리큘럼</dt><dd>{doneN === CURRICULUM.length ? `${CURRICULUM.length}회차 완료` : `${CURRICULUM.length}회차 중 ${doneN}회차 완료`}</dd>
           <dt>편집 체계</dt><dd><a href={u('/design-system')}>Design System</a></dd>
         </dl>
       </aside>
     </section>
   </div>
 </Base>
+
+<style>
+  /* 요약 카드 위 작은 사진 */
+  .portrait { margin: 28px 0 16px; width: 140px; }
+  .portrait img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border: 1px solid var(--hair); background: var(--thead); }
+  @media (max-width: 860px) { .portrait { margin-top: 40px; width: 120px; } }
+
+  /* 지금 하는 일 */
+  .now { list-style: none; padding-left: 0 !important; }
+  .now li { padding: 10px 0; border-bottom: 1px solid var(--hair); margin: 0 !important; }
+  .now b { display: block; font-size: 13px; font-weight: 500; color: var(--accent-ink); }
+
+  /* 이력 */
+  .cv { margin-top: -10px; }
+  .cv-g { display: grid; grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--hair); }
+  .cv-g h3 { margin: 0 !important; font-size: 13px !important; font-weight: 500; color: var(--faint); }
+  .cv-g ul { list-style: none; margin: 0; padding: 0 !important; }
+  .cv-g li { display: grid; grid-template-columns: 112px minmax(0, 1fr); column-gap: 16px; margin: 0 0 10px !important; }
+  .cv-g li:last-child { margin-bottom: 0 !important; }
+  .when { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .what { color: var(--ink); font-weight: 500; font-size: 15px; line-height: 1.5; word-break: keep-all; }
+  .note { display: block; font-weight: 400; font-size: 13px; color: var(--faint); }
+  @media (max-width: 560px) {
+    .cv-g { grid-template-columns: 1fr; row-gap: 8px; }
+    .cv-g li { grid-template-columns: 1fr; row-gap: 0; }
+  }
+</style>
